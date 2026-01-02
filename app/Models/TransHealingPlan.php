@@ -17,4 +17,4 @@ class TransHealingPlan extends Model
     {
         return $this->belongsTo(MasterHealingPlan::class, 'id_healing');
     }
-}
+} 
