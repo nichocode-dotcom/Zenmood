@@ -25,6 +25,12 @@
                 <p class="text-gray-600 text-sm md:text-base">Silakan login akun pengguna</p>
             </div>
 
+            @if(session('success'))
+                <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-xl">
+                    <p class="text-sm">{{ session('success') }}</p>
+                </div>
+            @endif
+
             <form action="{{ route('login.authenticate') }}" method="POST" class="space-y-6">
                 @csrf
                 
