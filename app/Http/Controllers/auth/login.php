@@ -22,14 +22,11 @@ class login extends Controller
     public function authenticate(Request $request)
     {
         $credentials = $request->validate([
-            'username' => 'required|string',
+            'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
 
-        // Check if username is email or actual username
-        $field = filter_var($credentials['username'], FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
-        
-        $user = \App\Models\User::where($field, $credentials['username'])->first();
+        $user = \App\Models\User::where('email', $credentials['email'])->first();
 
         if ($user && Hash::check($credentials['password'], $user->password)) {
             Auth::login($user, $request->filled('remember'));
@@ -39,8 +36,8 @@ class login extends Controller
         }
 
         return back()->withErrors([
-            'username' => 'Username atau password salah.',
-        ])->onlyInput('username');
+            'email' => 'Email atau password salah.',
+        ])->onlyInput('email');
     }
 
     public function logout(Request $request)

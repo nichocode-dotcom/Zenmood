@@ -28,16 +28,16 @@
             <form action="{{ route('login.authenticate') }}" method="POST" class="space-y-6">
                 @csrf
                 
-                <!-- Username Input -->
+                <!-- Email Input -->
                 <div>
                     <input 
-                        type="text" 
-                        name="username" 
-                        id="username"
-                        placeholder="USERNAME" 
+                        type="email" 
+                        name="email" 
+                        id="email"
+                        placeholder="EMAIL" 
                         required
                         class="w-full px-4 py-3 border-2 border-[#87D503] rounded-full focus:outline-none focus:ring-2 focus:ring-[#87D503] focus:border-transparent text-gray-800 placeholder-gray-400">
-                    @error('username')
+                    @error('email')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
@@ -71,7 +71,7 @@
                 <!-- Login Button -->
                 <button 
                     type="submit"
-                    class="w-full bg-[#558B2F] hover:bg-[#4A6B2F] text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200">
+                    class="w-full bg-[#558B2F] hover:bg-[#4A6B2F] text-white font-bold py-3 px-6 rounded-full transition-colors duration-200">
                     LOGIN
                 </button>
             </form>

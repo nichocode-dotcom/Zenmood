@@ -110,7 +110,7 @@
                 <!-- Register Button -->
                 <button 
                     type="submit"
-                    class="w-full bg-[#558B2F] hover:bg-[#4A6B2F] text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200">
+                    class="w-full bg-[#558B2F] hover:bg-[#4A6B2F] text-white font-bold py-3 px-6 rounded-full transition-colors duration-200">
                     DAFTAR
                 </button>
             </form>
