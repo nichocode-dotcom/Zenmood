@@ -26,12 +26,15 @@
             -ms-overflow-style: none;  
             scrollbar-width: none;  
         }
+        html {
+            scroll-behavior: smooth;
+        }
     </style>
 </head>
 <body class="bg-white font-sans antialiased text-gray-800">
     <div class="container mx-auto px-4">
-        <nav class="bg-white rounded-[20px] shadow-[2px_3px_10px_-3px_rgba(0,0,0,0.25)] mt-8 mb-8 px-4 lg:px-8 py-6 relative">
-            <div class="flex flex-wrap items-center justify-between">
+        <nav class="bg-white rounded-[20px] shadow-[2px_3px_10px_-3px_rgba(0,0,0,0.25)] mt-8 mb-0 px-4 lg:px-8 py-6 relative">
+            <div class="grid grid-cols-2 lg:grid-cols-3 items-center">
                 <a href="#" class="flex items-center gap-1 no-underline">
                     <svg class="h-10 lg:h-12 xl:h-16 lg:pl-6 xl:pl-10 mt-1 w-auto" viewBox="0 0 245 70" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M17.2634 3.34302C10.7068 5.75 6.51015 13.0378 5.23138 16.3808H2.61572L4.18512 0H49.0001V1.67151C49.0001 1.67151 44.5001 9 43.2501 8.75C42.0001 8.5 35.5001 8.46429 32.5001 9.75C29.5001 11.0357 38.0001 3.34302 38.0001 3.34302H17.2634Z" fill="#87D503"/>
@@ -46,40 +49,30 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
                     </svg>
                 </button>
-                <div id="navbar-menu" class="hidden w-full lg:block lg:w-auto mt-4 lg:mt-0">
-                    <ul class="flex flex-col items-center lg:flex-row lg:items-center gap-4 lg:gap-4 xl:gap-6 2xl:gap-8 list-none ml-9 mt-0 mb-0 p-0 lg:pr-6 xl:pr-10">
+                <div id="navbar-menu" class="hidden w-full lg:flex lg:items-center lg:justify-center mt-4 lg:mt-0 col-span-2 lg:col-span-1">
+                    <ul class="flex flex-col justify-center items-center lg:flex-row lg:items-center gap-4 lg:gap-8 xl:gap-10 list-none m-0 p-0">
                         <li>
-                            <a href="#" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
-                                Dashboard
+                            <a href="#home" class="nav-link text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[1rem] transition-colors duration-300">
+                                Beranda
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
-                                Mood Tracker
+                            <a href="#about" class="nav-link text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[1rem] transition-colors duration-300">
+                                About
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
-                                Journaling
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
-                                Habit Log
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
-                                Healing Plan
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('track-record') }}" 
-                            class="{{ request()->routeIs('track-record') ? 'text-[#7FBC4E]' : 'text-[#4A6B2F]' }} hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
-                                Track Record
+                            <a href="#" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[1rem] transition-colors duration-300">
+                                Produk
                             </a>
                         </li>
                     </ul>
+                    </div>
+
+                <div class="hidden lg:flex justify-end">
+                    <a href="/login" class="border-2 border-[#4A6B2F] text-[#4A6B2F] hover:bg-[#4A6B2F] hover:text-white font-bold rounded-full px-6 py-2 transition-all duration-300 text-sm lg:text-base whitespace-nowrap">
+                        SIGN IN
+                    </a>
                 </div>
             </div>
         </nav>
@@ -92,6 +85,46 @@
             menu.classList.toggle('hidden');
         });
     </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.section-spy');
+        const makeActive = (link) => {
+            navLinks.forEach(item => {
+                item.classList.remove('text-[#7FBC4E]'); 
+                item.classList.add('text-[#4A6B2F]');    
+            });
+            link.classList.remove('text-[#4A6B2F]');
+            link.classList.add('text-[#7FBC4E]');
+        };
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+
+                    const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
+                    
+                    if (activeLink) {
+                        makeActive(activeLink);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    });
+</script>
+
 </body>
 </html>
 
