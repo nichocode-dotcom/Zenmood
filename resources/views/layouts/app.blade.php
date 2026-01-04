@@ -79,6 +79,14 @@
                                 Track Record
                             </a>
                         </li>
+                        <li>
+                            <form action="{{ route('logout') }}" method="POST" class="inline">
+                                @csrf
+                                <button type="submit" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
                     </ul>
                 </div>
             </div>

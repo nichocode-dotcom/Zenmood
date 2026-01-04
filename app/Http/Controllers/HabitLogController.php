@@ -6,13 +6,14 @@ use Illuminate\Http\Request;
 use App\Models\MasterHabit;
 use App\Models\TransHabit;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class HabitLogController extends Controller
 {
     public function index()
     {
-        // Get current user ID (for now using 1, can be changed to auth()->id() when auth is implemented)
-        $userId = 1;
+        // Get current authenticated user ID
+        $userId = auth()->id();
         $today = Carbon::today();
         
         // Get all habits
@@ -45,7 +46,7 @@ class HabitLogController extends Controller
 
     public function toggle(Request $request)
     {
-        $userId = $request->input('user_id', 1);
+        $userId = auth()->id();
         $habitId = $request->input('habit_id');
         $status = $request->input('status');
         $tanggal = $request->input('tanggal');
