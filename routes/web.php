@@ -6,6 +6,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\HabitLogController;
 use App\Http\Controllers\auth\login as LoginController;
 use App\Http\Controllers\auth\register as RegisterController;
+use App\Http\Controllers\HealingPlanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,4 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/habit-log', [HabitLogController::class, 'index'])->name('habit-log');
     Route::post('/habit-log/toggle', [HabitLogController::class, 'toggle'])->name('habit-log.toggle');
     Route::post('/habit-log/store', [HabitLogController::class, 'store'])->name('habit-log.store');
+    Route::get('/healing-plan', [HealingPlanController::class, 'index'])->name('healing-plan');
+    Route::post('/healing-pilih', [HealingPlanController::class, 'pilih'])->name('healing.pilih');
+
 });

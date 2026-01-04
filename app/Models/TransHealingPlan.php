@@ -15,6 +15,6 @@ class TransHealingPlan extends Model
     // Relasi balik ke Master untuk ambil detail aktivitas & poin
     public function masterHealing()
     {
-        return $this->belongsTo(MasterHealingPlan::class, 'id_healing');
+        return $this->belongsTo(MasterHealingPlan::class, 'id_healing', 'id_healing');
     }
 } 
