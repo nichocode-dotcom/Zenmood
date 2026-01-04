@@ -47,7 +47,7 @@
                     </svg>
                 </button>
                 <div id="navbar-menu" class="hidden w-full lg:block lg:w-auto mt-4 lg:mt-0">
-                    <ul class="flex flex-col items-center lg:flex-row lg:items-center gap-4 lg:gap-4 xl:gap-6 2xl:gap-8 list-none m-0 p-0 lg:pr-6 xl:pr-10">
+                    <ul class="flex flex-col items-center lg:flex-row lg:items-center gap-4 lg:gap-4 xl:gap-6 2xl:gap-8 list-none ml-9 mt-0 mb-0 p-0 lg:pr-6 xl:pr-10">
                         <li>
                             <a href="#" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
                                 Dashboard
