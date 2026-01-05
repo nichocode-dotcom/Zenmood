@@ -11,6 +11,12 @@ class TransHealingPlan extends Model
     protected $primaryKey = 'id_trans_heal';
     
     protected $fillable = ['id_user', 'id_healing', 'tanggal', 'is_utama', 'is_completed'];
+    protected $casts = [
+    'checklist' => 'array',
+    'is_completed' => 'boolean',
+    'is_utama' => 'boolean',
+    'tanggal' => 'date',
+    ];
 
     // Relasi balik ke Master untuk ambil detail aktivitas & poin
     public function masterHealing()

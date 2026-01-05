@@ -29,29 +29,29 @@
                 <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 rounded-full"></div>
             </div>
 
-            <div class="bg-white rounded-3xl p-6 shadow-xl">
-                <h3 class="text-[#7FBC4E] font-bold text-center mb-6">Recent Activities</h3>
+            <div class="bg-white rounded-3xl p-6 shadow-sm">
+                <h3 class="text-[#7FBC4E] font-bold text-center mb-6">Aktivitas Terbaru</h3>
                 <div class="space-y-3">
                     @forelse($recentActivities as $activity)
-                    <div class="flex items-center bg-[#7FBC4E] text-white rounded-full px-4 py-3 shadow-sm transition-transform hover:scale-105">
-                        <span class="font-bold text-xs w-20 text-center border-r border-white/30 pr-2">
+                    <div class="flex items-center bg-[#7FBC4E] text-white rounded-full px-4 py-3 shadow-sm">
+                        <span class="font-bold text-xs w-20">
                             {{ \Carbon\Carbon::parse($activity->created_at)->format('h:i A') }}
                         </span>
                         
-                        <div class="mx-3 text-white">
+                        <div class="mx-2 text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
                             </svg>
                         </div>
-                        
-                        <span class="font-medium text-sm flex-1 truncate">
-                            {{ $activity->aktivitas->nama ?? 'Aktivitas Umum' }}
+
+                        <span class="font-medium text-sm flex-1 text-center truncate">
+                            {{-- Prioritas 1: Nama Aktivitas dari Relasi --}}
+                            {{-- Prioritas 2: Kategori Aktivitas (Backup) --}}
+                            {{ $activity->aktivitas->nama_aktivitas ?? $activity->kategori_aktivitas ?? 'Aktivitas Umum' }}
                         </span>
                     </div>
                     @empty
-                    <div class="text-center py-4">
-                        <p class="text-gray-400 text-sm italic">Belum ada aktivitas hari ini.</p>
-                    </div>
+                    <p class="text-gray-400 text-center text-sm italic py-4">Belum ada aktivitas hari ini.</p>
                     @endforelse
                 </div>
             </div>

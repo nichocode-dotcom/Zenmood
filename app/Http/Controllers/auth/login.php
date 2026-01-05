@@ -32,7 +32,7 @@ class login extends Controller
             Auth::login($user, $request->filled('remember'));
             $request->session()->regenerate();
             
-            return redirect()->intended(route('habit-log'));
+            return redirect()->intended(route('dashboard'));
         }
 
         return back()->withErrors([

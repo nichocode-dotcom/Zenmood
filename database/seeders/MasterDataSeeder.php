@@ -191,6 +191,101 @@ class MasterDataSeeder extends Seeder
                 'poin_baterai' => 7,
                 'kategori' => 'Edukasi'
             ],
+            [
+                'judul_aktivitas' => 'Stretching Ringan', 
+                'deskripsi_detail' => 'Lakukan peregangan ringan selama 10 menit.',
+                'poin_baterai' => 6,
+                'kategori' => 'Fisik'
+            ],
+            [
+                'judul_aktivitas' => 'Mendengarkan Musik Favorit', 
+                'deskripsi_detail' => 'Dengarkan playlist musik yang membuatmu rileks selama 15 menit.',
+                'poin_baterai' => 7,
+                'kategori' => 'Relaksasi'
+
+            ],
+            [
+                'judul_aktivitas' => 'Menulis Jurnal Refleksi', 
+                'deskripsi_detail' => 'Tulis perasaan dan pikiranmu hari ini di jurnal.',
+                'poin_baterai' => 9,
+                'kategori' => 'Refleksi'
+            ],
+            
+                // ... (Data sebelumnya) ...
+
+            [
+                'judul_aktivitas' => 'Yoga Pemula 15 Menit', 
+                'deskripsi_detail' => 'Gerakan yoga sederhana untuk meregangkan otot kaku dan menenangkan pikiran.',
+                'poin_baterai' => 12,
+                'kategori' => 'Fisik'
+            ],
+            [
+                'judul_aktivitas' => 'Mendengarkan Podcast Edukasi', 
+                'deskripsi_detail' => 'Dengarkan podcast tentang pengembangan diri atau topik baru yang menarik.',
+                'poin_baterai' => 8,
+                'kategori' => 'Edukasi'
+            ],
+            [
+                'judul_aktivitas' => 'Memasak Menu Simpel', 
+                'deskripsi_detail' => 'Coba resep masakan sederhana. Fokus pada aroma dan rasa masakan.',
+                'poin_baterai' => 10,
+                'kategori' => 'Produktivitas'
+            ],
+            [
+                'judul_aktivitas' => 'Unfollow Akun Toxic', 
+                'deskripsi_detail' => 'Buka sosmed, unfollow/mute 3 akun yang sering membuatmu merasa buruk.',
+                'poin_baterai' => 15,
+                'kategori' => 'Mental'
+            ],
+            [
+                'judul_aktivitas' => 'Menatap Langit / Bintang', 
+                'deskripsi_detail' => 'Keluar ruangan, tatap langit atau bintang selama 5 menit untuk perspektif baru.',
+                'poin_baterai' => 7,
+                'kategori' => 'Relaksasi'
+            ],
+            [
+                'judul_aktivitas' => 'Menyusun Puzzle / Teka-Teki', 
+                'deskripsi_detail' => 'Mainkan puzzle fisik atau Sudoku untuk melatih fokus otak sejenak.',
+                'poin_baterai' => 9,
+                'kategori' => 'Mental'
+            ],
+            [
+                'judul_aktivitas' => 'Karaoke Lagu Favorit', 
+                'deskripsi_detail' => 'Nyanyikan 1-2 lagu favoritmu dengan lantang untuk melepas stres.',
+                'poin_baterai' => 10,
+                'kategori' => 'Hiburan'
+            ],
+            [
+                'judul_aktivitas' => 'Membersihkan Galeri Foto', 
+                'deskripsi_detail' => 'Hapus 10 screenshot atau foto tidak penting di HP-mu.',
+                'poin_baterai' => 6,
+                'kategori' => 'Produktivitas'
+            ],
+            [
+                'judul_aktivitas' => 'Olahraga Mata', 
+                'deskripsi_detail' => 'Istirahatkan mata dari layar. Lakukan gerakan memutar bola mata perlahan.',
+                'poin_baterai' => 5,
+                'kategori' => 'Fisik'
+            ],
+            [
+                'judul_aktivitas' => 'Menulis Puisi Singkat', 
+                'deskripsi_detail' => 'Tuangkan perasaanmu ke dalam bentuk puisi bebas atau pantun jenaka.',
+                'poin_baterai' => 8,
+                'kategori' => 'Refleksi'
+            ],
+            [
+                'judul_aktivitas' => 'Memberi Makan Hewan', 
+                'deskripsi_detail' => 'Beri makan peliharaanmu atau kucing jalanan di sekitar rumah.',
+                'poin_baterai' => 9,
+                'kategori' => 'Sosial'
+            ],
+            [
+                'judul_aktivitas' => 'Mandi Air Hangat', 
+                'deskripsi_detail' => 'Nikmati mandi air hangat untuk merilekskan otot yang tegang.',
+                'poin_baterai' => 12,
+                'kategori' => 'Relaksasi'
+            ],
+            
 
 
         ]);

@@ -200,51 +200,52 @@
                     <p class="text-sm">{{ $habitAnalysis }}</p>
                 </div>
             </div>
-            <div class="bg-white rounded-2xl shadow-[2px_3px_15px_-3px_rgba(0,0,0,0.25)] p-6">
-                <h5 class="font-bold text-gray-800 text-lg mb-4">Progres Healing Plan</h5>
-
-                <div class="w-full mb-4">
-                    <div class="w-full bg-[#EEF9EE] rounded-full h-9 relative overflow-hidden">
-                        
-                        <div class="bg-[#7FBC4E] h-full rounded-full transition-all duration-500 ease-out" 
-                            style="width: {{ $healingPercentage }}%">
-                        </div>
-
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <span class="text-sm font-bold {{ $healingPercentage > 55 ? 'text-white' : 'text-[#4A6B2F]' }}">
-                                {{ $healingPercentage }}% Selesai
-                            </span>
-                        </div>
-
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-green-50">
+                <h3 class="text-[#4A6B2F] font-bold mb-4">Progres Healing Plan</h3>
+                
+                <div class="relative h-9 bg-[#EEF9EE] rounded-full mb-6 overflow-hidden">
+                    <div class="absolute top-0 left-0 h-full bg-[#7FBC4E] rounded-full transition-all duration-1000" 
+                        style="width: {{ $healingPercentage }}%"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span class="text-sm font-bold {{ $healingPercentage > 55 ? 'text-white' : 'text-[#4A6B2F]' }}">
+                            {{ $healingPercentage }}% Selesai
+                        </span>
                     </div>
                 </div>
 
-                <ul class="space-y-3 text-sm text-gray-600">
-                    @foreach($allHealing as $plan)
-                    <li class="flex items-center gap-3">
-                        <span class="w-6 h-6 {{ $plan->status ? 'bg-[#7FBC4E]' : 'bg-gray-100 border-2 border-gray-300' }} rounded flex items-center justify-center shrink-0">
-                            @if($plan->status)
-                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                            @endif
-                        </span>
-                        
-                        <span class="{{ $plan->status ? 'font-medium text-gray-800' : 'text-gray-400' }}">
-                            {{ $plan->masterHealingPlan->nama_kegiatan ?? 'Kegiatan' }} 
-                            {{ $plan->status ? '' : '(Belum)' }}
-                        </span>
-                    </li>
-                    @endforeach
-                </ul>
+                <div class="space-y-3 mb-6">
+                    @forelse($allHealing as $plan)
+                        <div class="flex items-center gap-3">
+                            <div class="flex-none w-6 h-6 rounded border-2 flex items-center justify-center transition-colors
+                                {{ $plan->is_completed ? 'bg-[#7FBC4E] border-[#7FBC4E]' : 'border-gray-300 bg-white' }}">
+                                @if($plan->is_completed)
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                @endif
+                            </div>
+                            <span class="text-sm font-medium {{ $plan->is_completed ? 'text-gray-400 line-through' : 'text-gray-600' }}">
+                                {{ $plan->masterHealing->judul_aktivitas ?? 'Aktivitas Healing' }}
+                            </span>
+                        </div>
+                    @empty
+                        <div class="text-center py-4 text-gray-400 text-xs italic">
+                            Belum ada rencana healing pada tanggal ini.
+                        </div>
+                    @endforelse
+                </div>
+
                 <div class="text-center mt-4">
-                    <button id="toggle-analysis-healing" class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 text-sm font-medium px-4 py-1.5 rounded-full shadow-sm transition-colors inline-flex items-center gap-2">
+                    <button id="toggle-analysis-healing" class="bg-white border border-gray-100 text-[#4A6B2F] text-sm font-medium px-5 py-2 rounded-full shadow-[2px_6px_18px_-8px_rgba(0,0,0,0.2)] inline-flex items-center gap-2 hover:bg-gray-50 transition-colors">
                         <span id="toggle-analysis-healing-label">Buka Analisis ▾</span>
                     </button>
                 </div>
-                <div id="analysis-healing" class="mt-4 bg-[#F7FFF4] p-4 rounded-lg border border-[#E7F6DF] hidden text-left text-sm text-gray-700">
-                    <strong class="block text-[#4A6B2F] mb-1">Analisis Healing Plan</strong>
-                    <p class="text-sm">Anda sudah melakukan beberapa aktivitas yang disarankan oleh sistem; teruskan kebiasaan baik ini. Prioritaskan tugas yang memberi kepuasan kecil untuk menjaga motivasi.</p>
+
+                <div id="analysis-healing" class="mt-4 bg-[#F7FFF4] p-4 rounded-xl border border-[#E7F6DF] hidden text-left text-sm text-gray-700 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <strong class="block text-[#4A6B2F] mb-1 font-bold">Analisis Healing Plan</strong>
+                    <p class="text-sm text-gray-600 leading-relaxed">
+                        {{ $healingAnalysis }}
+                    </p>
                 </div>
             </div>
         </div>

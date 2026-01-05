@@ -48,7 +48,7 @@ class TrackRecordController extends Controller
                             ->get();
 
         $allHabits = TransHabit::where('id_user', $user->id_user)
-                            ->whereDate('created_at', $today)
+                            ->whereDate('tanggal', $today)
                             ->with('habit') 
                             ->get();
         
@@ -77,14 +77,33 @@ class TrackRecordController extends Controller
             $habitAnalysis = "Tampaknya belum ada habit yang selesai. Tidak apa-apa, pilih satu habit termudah dan kerjakan sekarang juga.";
         }
 
+        // --- PERBAIKAN HEALING PLAN ---
+        // Ambil semua rencana yang tercatat pada tanggal $today
         $allHealing = TransHealingPlan::where('id_user', $user->id_user)
-                                    ->whereDate('created_at', $today)
-                                    ->with('masterHealing') 
-                                    ->get();
+                                        ->where('tanggal', $today) // Ganti 'created_at' jadi 'tanggal'
+                                        ->with('masterHealing') // Pastikan ini sesuai nama fungsi di Model TransHealingPlan
+                                        ->get();
 
         $totalHealing = $allHealing->count();
-        $doneHealing = $allHealing->where('status', 1)->count();
+        
+        // Ganti 'status' jadi 'is_completed' sesuai struktur database Healing Plan
+        $doneHealing = $allHealing->where('is_completed', 1)->count(); 
+        
         $healingPercentage = $totalHealing > 0 ? round(($doneHealing / $totalHealing) * 100) : 0;
+
+        $healingAnalysis = "";
+
+        if ($totalHealing == 0) {
+            $healingAnalysis = "Belum ada rencana healing. Yuk, isi mood tracker dulu untuk mendapatkan rekomendasi aktivitas yang pas buat kamu!";
+        } elseif ($healingPercentage == 100) {
+            $healingAnalysis = "Luar biasa! Kamu memprioritaskan kesehatan mentalmu dengan sangat baik hari ini. Nikmati perasaan lega dan tenang ini ya.";
+        } elseif ($healingPercentage >= 50) {
+            $healingAnalysis = "Progres yang bagus! Kamu sudah melakukan sebagian besar aktivitas healing. Usahakan selesaikan sisanya agar baterai energimu penuh kembali.";
+        } elseif ($healingPercentage > 0) {
+            $healingAnalysis = "Awal yang baik. Anda sudah melakukan beberapa aktivitas yang disarankan oleh sistem; teruskan kebiasaan baik ini. Prioritaskan tugas yang memberi kepuasan kecil untuk menjaga motivasi.";
+        } else {
+            $healingAnalysis = "Rencana sudah dibuat, namun belum ada aktivitas yang dicentang. Tidak apa-apa, coba pilih satu aktivitas termudah (misal: Minum Air) dan lakukan sekarang.";
+        }
         
         $todaysMoods = Mood::where('id_user', $user->id_user)
                         ->whereDate('created_at', $today)
@@ -156,6 +175,7 @@ class TrackRecordController extends Controller
             'allHabits', 
             'habitPercentage',
             'allHealing',
+            'healingAnalysis',
             'healingPercentage',
             'habitAnalysis',
             'chartLabels',
@@ -170,10 +190,16 @@ class TrackRecordController extends Controller
     public function cetakPdf(Request $request)
     {
         $user = Auth::user();
-        $selectedDate = $request->input('date', Carbon::now()->format('Y-m-d'));
+        
+        // 1. Ambil Tanggal
+        $selectedDate = $request->input('date', session('selected_date', Carbon::now()->format('Y-m-d')));
         $today = $selectedDate;
 
-        $todayMood = Mood::where('id_user', $user->id_user)->whereDate('created_at', $today)->orderBy('created_at', 'desc')->first();
+        // 2. Data Mood & Insight
+        $todayMood = Mood::where('id_user', $user->id_user)
+                        ->whereDate('created_at', $today)
+                        ->orderBy('created_at', 'desc')
+                        ->first();
         
         $insightMessage = "Belum ada data mood.";
         if ($todayMood) {
@@ -182,55 +208,44 @@ class TrackRecordController extends Controller
             else $insightMessage = "Hari yang berat? Tidak apa-apa untuk istirahat.";
         }
 
-        $journals = TransJurnal::where('id_user', $user->id_user)->whereDate('created_at', $today)->latest()->get();
+        // 3. Jurnal
+        $journals = TransJurnal::where('id_user', $user->id_user)
+                                ->whereDate('created_at', $today)
+                                ->latest()
+                                ->get();
         
-        $allHabits = TransHabit::where('id_user', $user->id_user)->whereDate('created_at', $today)->with('habit')->get();
+        // 4. Habit Log (Filter Tanggal Benar)
+        $allHabits = TransHabit::where('id_user', $user->id_user)
+                                ->where('tanggal', $today)
+                                ->with('habit')
+                                ->get();
+                                
         $habitPercentage = $allHabits->count() > 0 ? round(($allHabits->where('status', 1)->count() / $allHabits->count()) * 100) : 0;
 
-        $allHealing = TransHealingPlan::where('id_user', $user->id_user)->whereDate('created_at', $today)->with('masterHealingPlan')->get();
-        $healingPercentage = $allHealing->count() > 0 ? round(($allHealing->where('status', 1)->count() / $allHealing->count()) * 100) : 0;
+        // 5. Healing Plan (Filter Tanggal Benar)
+        $allHealing = TransHealingPlan::where('id_user', $user->id_user)
+                                      ->where('tanggal', $today)
+                                      ->with('masterHealing')
+                                      ->get();
+                                      
+        $healingPercentage = $allHealing->count() > 0 ? round(($allHealing->where('is_completed', 1)->count() / $allHealing->count()) * 100) : 0;
 
+        // 6. Chart Data (Logic Grafik yang Hilang)
         $todaysMoods = Mood::where('id_user', $user->id_user)
-                        ->whereDate('created_at', $today)
-                        ->orderBy('created_at', 'asc')->get();
+                           ->whereDate('created_at', $today)
+                           ->orderBy('created_at', 'asc')->get();
 
-        $avgMoodScore = $todaysMoods->avg('skor');
-        $moodCount = $todaysMoods->count();
-        $moodAnalysisText = "Data tidak cukup untuk analisis.";
-        $moodRecommendationText = "Belum ada rekomendasi spesifik.";
-        $moodDetailText = "Grafik belum terbentuk sempurna.";
-
-        if ($moodCount > 0) {
-            if ($avgMoodScore >= 8) {
-                $moodAnalysisText = "Energi positif Anda sangat dominan hari ini! Grafik menunjukkan stabilitas emosi yang sangat baik di zona hijau.";
-                $moodRecommendationText = "Manfaatkan energi tinggi ini untuk menyelesaikan tugas sulit, berkreasi, atau berbagi kebahagiaan dengan orang terdekat.";
-                $moodDetailText = "Grafik batang didominasi warna hijau terang, menandakan konsistensi perasaan positif sepanjang hari.";
-            } elseif ($avgMoodScore >= 5) {
-                $moodAnalysisText = "Mood Anda hari ini cukup seimbang, meski mungkin ada sedikit fluktuasi. Ini adalah kondisi yang wajar dan manusiawi.";
-                $moodRecommendationText = "Pertahankan keseimbangan ini. Luangkan waktu sejenak untuk 'me time' atau meditasi ringan jika mulai merasa lelah.";
-                $moodDetailText = "Grafik menunjukkan variasi warna kuning dan hijau muda, mencerminkan dinamika emosi yang stabil namun tetap aktif.";
-            } else {
-                $moodAnalysisText = "Terdeteksi penurunan mood yang cukup signifikan hari ini. Grafik menunjukkan Anda mungkin sedang melewati fase yang berat atau melelahkan.";
-                $moodRecommendationText = "Jangan memaksakan diri. Prioritaskan tidur lebih awal malam ini (7-8 jam), kurangi kafein, dan coba lakukan teknik pernapasan dalam.";
-                $moodDetailText = "Grafik didominasi warna oranye atau merah. Penurunan batang grafik pada jam tertentu bisa menjadi petunjuk pemicu stres utama Anda.";
-            }
-        }
-
+        // --- INI BAGIAN YANG SEBELUMNYA HILANG ---
         $chartLabels = [];
         $chartValues = [];
         
         foreach ($todaysMoods as $mood) {
-            $emoji = '';
-            if ($mood->skor >= 9) $emoji = '🤩';
-            elseif ($mood->skor >= 7) $emoji = '😊';
-            elseif ($mood->skor >= 5) $emoji = '😐';
-            elseif ($mood->skor >= 3) $emoji = '😔';
-            else $emoji = '😡';
-
-            $chartLabels[] = $emoji . " " . Carbon::parse($mood->created_at)->format('H:i');
+            $jam = Carbon::parse($mood->created_at)->format('H:i');
+            $chartLabels[] = $jam;
             $chartValues[] = $mood->skor;
         }
 
+        // Konfigurasi QuickChart (API Grafik untuk PDF)
         $chartConfig = [
             'type' => 'bar',
             'data' => [
@@ -252,19 +267,44 @@ class TrackRecordController extends Controller
             ]
         ];
         
+        // Generate URL Grafik
         $chartUrl = 'https://quickchart.io/chart?c=' . urlencode(json_encode($chartConfig));
+        // ------------------------------------------
 
+        // 7. Analisis Teks (Logic Default)
+        $avgMoodScore = $todaysMoods->avg('skor');
+        $moodCount = $todaysMoods->count();
+        $moodAnalysisText = "Data tidak cukup untuk analisis.";
+        $moodRecommendationText = "Belum ada rekomendasi spesifik.";
+        $moodDetailText = "Grafik belum terbentuk sempurna.";
+
+        if ($moodCount > 0) {
+            if ($avgMoodScore >= 8) {
+                $moodAnalysisText = "Energi positif Anda sangat dominan hari ini! Grafik menunjukkan stabilitas emosi yang sangat baik.";
+                $moodRecommendationText = "Manfaatkan energi ini untuk menyelesaikan tugas sulit atau berbagi kebahagiaan.";
+                $moodDetailText = "Grafik batang didominasi level tinggi, menandakan konsistensi perasaan positif.";
+            } elseif ($avgMoodScore >= 5) {
+                $moodAnalysisText = "Mood Anda hari ini cukup seimbang. Ini adalah kondisi yang wajar dan manusiawi.";
+                $moodRecommendationText = "Pertahankan keseimbangan ini. Luangkan waktu sejenak untuk 'me time' jika mulai lelah.";
+                $moodDetailText = "Grafik menunjukkan variasi skor menengah, mencerminkan dinamika emosi yang stabil.";
+            } else {
+                $moodAnalysisText = "Terdeteksi penurunan mood hari ini. Anda mungkin sedang melewati fase yang berat.";
+                $moodRecommendationText = "Jangan memaksakan diri. Prioritaskan istirahat dan lakukan hal yang menenangkan.";
+                $moodDetailText = "Grafik didominasi level rendah. Ini bisa menjadi petunjuk adanya pemicu stres.";
+            }
+        }
+
+        // 8. Generate PDF
         $pdf = PDF::loadView('track_record.pdf', compact(
-    'user', 'selectedDate', 'insightMessage', 'journals', 
-                'allHabits', 'habitPercentage', 'allHealing', 'healingPercentage', 
-                'chartUrl',
-                'moodAnalysisText',      
-                'moodRecommendationText', 
-                'moodDetailText'          
-            ));
+            'user', 'selectedDate', 'insightMessage', 'journals', 
+            'allHabits', 'habitPercentage', 'allHealing', 'healingPercentage', 
+            'chartUrl', // Variabel ini sekarang SUDAH ADA
+            'moodAnalysisText',      
+            'moodRecommendationText', 
+            'moodDetailText'          
+        ));
 
         $pdf->setOptions(['isRemoteEnabled' => true]);
-
         $pdf->setPaper('A4', 'portrait');
 
         return $pdf->stream('Laporan-ZenMood-'.$user->name.'.pdf');

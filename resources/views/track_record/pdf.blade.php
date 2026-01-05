@@ -13,27 +13,15 @@
         .text-right { text-align: right; }
         .font-bold { font-weight: bold; }
         .uppercase { text-transform: uppercase; }
-        .relative { position: relative; }
         
-        .m-0 { margin: 0; }
-        .mt-1 { margin-top: 4px; }
-        .mt-2 { margin-top: 8px; }
-        .mt-4 { margin-top: 16px; }
         .mt-8 { margin-top: 32px; }
-        .mb-1 { margin-bottom: 4px; }
-        .mb-2 { margin-bottom: 8px; }
         .mb-4 { margin-bottom: 16px; }
         .p-4 { padding: 16px; }
-        .p-8 { padding: 32px; }
         .px-8 { padding-left: 32px; padding-right: 32px; }
-        .py-2 { padding-top: 8px; padding-bottom: 8px; }
         
         .bg-zen { background-color: #7FBC4E; }
         .bg-zen-light { background-color: #F0F7E6; }
         .bg-gray-50 { background-color: #F9FAFB; }
-        .bg-gray-100 { background-color: #F3F4F6; }
-        .bg-white { background-color: #ffffff; }
-        
         .text-white { color: #ffffff; }
         .text-zen { color: #7FBC4E; }
         .text-zen-dark { color: #4A6B2F; }
@@ -44,46 +32,25 @@
         .border-zen-light { border-color: #E7F6DF; }
         .rounded { border-radius: 4px; }
         .rounded-lg { border-radius: 8px; }
-        .rounded-full { border-radius: 9999px; }
 
         .text-xs { font-size: 10px; }
         .text-sm { font-size: 12px; }
         .text-lg { font-size: 18px; }
-        .text-xl { font-size: 20px; }
         .text-2xl { font-size: 24px; }
         
-        .header-container {
-            padding: 30px 40px;
-        }
+        .header-container { padding: 30px 40px; }
         
-        .table-grid { width: 100%; border-collapse: collapse; }
-        .table-grid td { vertical-align: top; }
-        .w-half { width: 48%; }
-        .w-gap { width: 4%; }
+        /* Layout Tabel Kolom 2 */
+        .table-grid { width: 100%; border-collapse: separate; border-spacing: 15px 0; margin-left: -15px; }
+        .table-grid td { vertical-align: top; width: 50%; } /* Paksa 50% agar seimbang */
 
-        .chart-img {
-            width: 100%;
-            height: auto;
-            max-height: 250px;
-            object-fit: contain;
-        }
+        .chart-img { width: 100%; height: auto; max-height: 250px; object-fit: contain; }
 
-        .progress-track {
-            background-color: #E5E7EB;
-            height: 6px;
-            border-radius: 99px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-        .progress-fill {
-            background-color: #7FBC4E;
-            height: 100%;
-        }
+        .progress-track { background-color: #E5E7EB; height: 6px; border-radius: 99px; overflow: hidden; margin-bottom: 12px; }
+        .progress-fill { background-color: #7FBC4E; height: 100%; }
 
-        .check-symbol {
-            font-family: DejaVu Sans, sans-serif; 
-            margin-right: 5px;
-        }
+        .check-symbol { font-family: DejaVu Sans, sans-serif; margin-right: 8px; font-size: 14px; }
+        .list-item { padding: 8px 0; border-bottom: 1px dashed #eee; display: block; }
     </style>
 </head>
 <body>
@@ -123,60 +90,60 @@
 
             <div class="bg-gray-50 border border-zen-light rounded-lg p-4 text-sm leading-relaxed">
                 <strong class="text-zen-dark block">Analisis Sistem:</strong>
-                <div class="text-gray-500 mb-2">{{ $moodAnalysisText ?? 'Data tidak cukup untuk analisis.' }}</div>
+                <div class="text-gray-500 mb-2">{{ $moodAnalysisText ?? 'Data tidak cukup.' }}</div>
 
                 <strong class="text-zen-dark block mt-2">Rekomendasi Aktivitas:</strong>
-                <div class="text-gray-500 mb-2">{{ $moodRecommendationText ?? 'Belum ada rekomendasi spesifik.' }}</div>
+                <div class="text-gray-500 mb-2">{{ $moodRecommendationText ?? '-' }}</div>
 
                 <strong class="text-zen-dark block mt-2">Detail Visualisasi:</strong>
-                <div class="text-gray-500">{{ $moodDetailText ?? 'Grafik belum terbentuk sempurna.' }}</div>
+                <div class="text-gray-500">{{ $moodDetailText ?? '-' }}</div>
             </div>
         </div>
 
         <table class="table-grid mb-8">
             <tr>
-                <td class="w-half">
+                <td>
                     <div class="text-zen-dark font-bold text-lg uppercase border-b border-zen-light pb-2 mb-4">
                         Habit Log ({{ $habitPercentage }}%)
                     </div>
-                    <div class="border border-gray-100 rounded-lg p-4">
+                    <div class="border border-gray-100 rounded-lg p-4 bg-gray-50">
                         <div class="progress-track">
                             <div class="progress-fill" style="width: {{ $habitPercentage }}%"></div>
                         </div>
 
                         @forelse($allHabits as $habit)
-                            <div class="text-sm py-2 border-b border-dashed border-gray-100 text-gray-500">
+                            <div class="list-item text-gray-500">
                                 <span class="check-symbol {{ $habit->status ? 'text-zen' : 'text-gray-400' }}">
                                     {{ $habit->status ? '✔' : '○' }}
                                 </span>
                                 {{ $habit->habit->nama ?? 'Habit' }}
                             </div>
                         @empty
-                            <div class="text-xs text-gray-400 italic">Tidak ada data habit.</div>
+                            <div class="text-xs text-gray-400 italic py-2">Tidak ada data habit.</div>
                         @endforelse
                     </div>
                 </td>
 
-                <td class="w-gap"></td>
-
-                <td class="w-half">
+                <td>
                     <div class="text-zen-dark font-bold text-lg uppercase border-b border-zen-light pb-2 mb-4">
                         Healing Plan ({{ $healingPercentage }}%)
                     </div>
-                    <div class="border border-gray-100 rounded-lg p-4">
+                    <div class="border border-gray-100 rounded-lg p-4 bg-gray-50">
                         <div class="progress-track">
                             <div class="progress-fill" style="width: {{ $healingPercentage }}%"></div>
                         </div>
 
                         @forelse($allHealing as $plan)
-                            <div class="text-sm py-2 border-b border-dashed border-gray-100 text-gray-500">
-                                <span class="check-symbol {{ $plan->status ? 'text-zen' : 'text-gray-400' }}">
-                                    {{ $plan->status ? '✔' : '○' }}
+                            <div class="list-item text-gray-500">
+                                {{-- FIX: status -> is_completed --}}
+                                <span class="check-symbol {{ $plan->is_completed ? 'text-zen' : 'text-gray-400' }}">
+                                    {{ $plan->is_completed ? '✔' : '○' }}
                                 </span>
-                                {{ $plan->masterHealingPlan->nama_kegiatan ?? 'Kegiatan' }}
+                                {{-- FIX: relasi masterHealing & judul_aktivitas --}}
+                                {{ $plan->masterHealing->judul_aktivitas ?? 'Aktivitas Healing' }}
                             </div>
                         @empty
-                            <div class="text-xs text-gray-400 italic">Tidak ada healing plan.</div>
+                            <div class="text-xs text-gray-400 italic py-2">Tidak ada healing plan.</div>
                         @endforelse
                     </div>
                 </td>
@@ -190,10 +157,11 @@
             @forelse($journals as $jurnal)
                 <div class="bg-gray-50 border-l-4 border-gray-400 p-3 mb-2 rounded-r">
                     <span class="text-zen font-bold text-xs block mb-1">
-                        ⏰ {{ \Carbon\Carbon::parse($jurnal->created_at)->format('H:i') }}
+                        ⏰ {{ \Carbon\Carbon::parse($jurnal->created_at)->format('H:i') }} | {{ $jurnal->judul ?? 'Tanpa Judul' }}
                     </span>
                     <div class="text-sm text-gray-500 leading-relaxed">
-                        {{ $jurnal->isi }}
+                        {{-- FIX: isi -> isi_teks --}}
+                        {{ $jurnal->isi_teks ?? $jurnal->isi ?? '-' }}
                     </div>
                 </div>
             @empty
