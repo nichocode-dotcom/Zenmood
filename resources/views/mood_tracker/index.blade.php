@@ -17,7 +17,7 @@
         /* Style Tambahan agar user tau mana yang dipilih */
         .selected-mood {
             border: 3px solid #72B940;
-            background-color: #f0fdf4;
+            background-color: #d1ffb1ff;
             transform: scale(1.05);
         }
         .selected-category {
@@ -45,7 +45,7 @@
         </div>
 
 
-        <div class="main-content max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div class="main-content max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-1">
             <div class="w-full">
                 
                 <div class="mb-6 flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 relative z-10">
@@ -54,8 +54,14 @@
                         <p class="text-gray-600 text-[13px] sm:text-[14px] lg:text-[15px]">Hai, {{ Auth::user()->name ?? 'User' }} ini adalah untuk mengukur moodmu, selamat datang di fitur pengukuran mood.</p>
                     </div>
                     
-                    <div class="bg-white border-2 border-[#72B940] rounded-[15px] px-4 sm:px-6 py-3 sm:py-4 flex items-center gap-3 w-full lg:w-auto lg:min-w-[320px] relative z-10">
-                        <span class="text-[#558B2F] font-bold text-[14px] sm:text-[16px]">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</span>
+                    <div class="flex items-center gap-3 text-[#558B2F] font-bold bg-white px-6 py-3 rounded-xl border-2 border-[#558B2F] shadow-sm mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        
+                        <span class="text-base tracking-wide">
+                            {{ \Carbon\Carbon::now()->locale('id')->isoFormat('dddd, D MMMM Y') }}
+                        </span>
                     </div>
                 </div>
 
