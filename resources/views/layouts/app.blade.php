@@ -59,7 +59,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
+                            <a href="{{ route('journaling.index') }}" class="text-[#7FBC4E] font-bold text-[1.1rem] transition-colors duration-300 no-underline block py-2 md:py-0">
                                 Journaling
                             </a>
                         </li>
@@ -74,8 +74,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('track-record') }}" 
-                            class="{{ request()->routeIs('track-record') ? 'text-[#7FBC4E]' : 'text-[#4A6B2F]' }} hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
+                            <a href="{{ route('track-record') }}" class="text-[#7FBC4E] font-bold text-[1.1rem] transition-colors duration-300 no-underline block py-2 md:py-0">
                                 Track Record
                             </a>
                         </li>
