@@ -12,25 +12,20 @@ class HabitLogController extends Controller
 {
     public function index()
     {
-        // Get current authenticated user ID
         $userId = auth()->id();
         $today = Carbon::today();
         
-        // Get all habits
         $habits = MasterHabit::all();
         
-        // Get today's completed habits
         $completedHabits = TransHabit::where('id_user', $userId)
             ->where('tanggal', $today->format('Y-m-d'))
             ->where('status', 1)
             ->pluck('id_habit')
             ->toArray();
         
-        // Calculate progress
         $totalHabits = $habits->count();
         $completedCount = count($completedHabits);
         
-        // Format date in Indonesian
         $formattedDate = $today->locale('id')->isoFormat('dddd, D MMMM YYYY');
         
         return view('habitlog.index', [
@@ -51,7 +46,6 @@ class HabitLogController extends Controller
         $status = $request->input('status');
         $tanggal = $request->input('tanggal');
 
-        // Find or create the transaction
         $transHabit = TransHabit::updateOrCreate(
             [
                 'id_user' => $userId,

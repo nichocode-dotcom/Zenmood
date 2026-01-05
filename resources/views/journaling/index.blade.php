@@ -192,7 +192,7 @@
             </template>
         </div>
 
-    <button @click="openModal('create')" class="fixed bottom-10 right-10 bg-[#558B2F] hover:bg-[#457225] text-white rounded-[24px] p-4 shadow-xl transition transform hover:scale-110 active:scale-95 z-40">
+    <button @click="openModal('create')" class="fixed bottom-6 right-6 bg-[#558B2F] hover:bg-[#87D503] text-white rounded-full p-4 shadow-xl transition transform hover:scale-110 active:scale-95 z-50">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" /></svg>
     </button>
 
