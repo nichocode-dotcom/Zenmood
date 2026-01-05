@@ -5,7 +5,6 @@
 @section('content')
 <div class="min-h-screen flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col md:flex-row">
-        <!-- Left Section - Green Panel -->
         <div class="bg-[#558B2F] w-full md:w-2/5 p-8 md:p-12 flex flex-col justify-center items-center">
             <div class="w-full">
                 <img src="{{ asset('white-logo.png') }}" alt="ZenMood" class="h-12 md:h-16 mb-8">
@@ -18,7 +17,6 @@
             </div>
         </div>
 
-        <!-- Right Section - Register Form -->
         <div class="w-full md:w-3/5 p-8 md:p-12 flex flex-col justify-center">
             <div class="mb-8">
                 <h2 class="text-[#558B2F] text-2xl md:text-3xl font-bold mb-2">Buat Akun Baru</h2>

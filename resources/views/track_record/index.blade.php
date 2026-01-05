@@ -5,7 +5,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
         <div class="lg:col-span-4">
             <div class="bg-white p-6 rounded-2xl shadow-[2px_3px_15px_-3px_rgba(0,0,0,0.25)] flex flex-col justify-center">
-                <h5 class="text-xl font-bold text-gray-800">Halo, {{ $namaUser }}!</h5>
+                <h5 class="text-xl font-bold text-gray-800">Halo, {{ $user->name }}!</h5>
                 <p class="text-gray-500 text-sm mt-1">Ini hasil Track Record Anda</p>                
             </div>
         </div>
@@ -20,7 +20,7 @@
                     </div>
                     <div>
                         <p class="block text-lg text-white font-semibold">Insight:</p>
-                        <p class="text-sm opacity-90 leading-relaxed">{{ $insight }}</p>
+                        <p class="text-sm opacity-90 leading-relaxed">{{ $insightMessage }}</p>
                     </div>
                 </div>
             </div>
@@ -28,67 +28,119 @@
     </div>
 
     <div class="flex items-center justify-between mt-4 mb-6">
-        <button class="bg-white border border-gray-200 text-gray-700 text-sm font-medium px-4 py-2 rounded-full shadow-[2px_3px_15px_-3px_rgba(0,0,0,0.25)] flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <span>Hari ini</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.293l3.71-4.06a.75.75 0 111.08 1.04l-4.25 4.65a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-            </svg>
-        </button>
-        <button class="border border-[#7FBC4E] text-[#7FBC4E] hover:bg-[#7FBC4E] hover:text-white text-sm font-medium px-4 py-2 rounded-full transition-colors flex items-center gap-2">
+        <form action="{{ route('track-record') }}" method="GET" class="flex items-center gap-2">
+    
+            <div class="relative">
+                <input 
+                    type="date" 
+                    name="date" 
+                    value="{{ $selectedDate }}" 
+                    class="pl-10 pr-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-full shadow-[2px_3px_15px_-3px_rgba(0,0,0,0.25)] focus:outline-none focus:ring-2 focus:ring-[#7FBC4E] cursor-pointer"
+                    onchange="this.form.submit()" 
+                >
+                
+                <div class="absolute left-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                </div>
+            </div>
+
+            @if($selectedDate != \Carbon\Carbon::now()->format('Y-m-d'))
+                <a href="{{ route('track-record') }}" 
+                class="group flex items-center gap-2 px-4 py-2 bg-white border border-[#7FBC4E] text-[#7FBC4E] text-sm font-medium rounded-full shadow-sm hover:bg-[#7FBC4E] hover:text-white transition-all duration-300 transform hover:-translate-y-0.5">
+                    
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    
+                    <span>Kembali ke Hari Ini</span>
+                </a>
+            @endif
+
+        </form>
+        <a href="{{ route('track-record.cetak', ['date' => $selectedDate]) }}" target="_blank" class="border border-[#7FBC4E] text-[#7FBC4E] hover:bg-[#7FBC4E] hover:text-white text-sm font-medium px-4 py-2 rounded-full transition-colors flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19 8h-1V3H6v5H5a2 2 0 00-2 2v6a2 2 0 002 2h14a2 2 0 002-2v-6a2 2 0 00-2-2zM8 5h8v3H8V5zm3 12H7v-5h4v5zm6 0h-4v-5h4v5z"/>
             </svg>
             <span>Cetak PDF</span>
-        </button>
+        </a>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div class="lg:col-span-8 space-y-8">
             <div class="bg-white rounded-2xl shadow-[2px_3px_15px_-3px_rgba(0,0,0,0.25)] p-6">
                 <h5 class="font-bold text-gray-800 text-lg mb-4">Mood Tracker Emosional</h5>
-                <div class="h-[300px] bg-gray-50 rounded-xl flex items-center justify-center text-gray-400 border border-dashed border-gray-200">
-                    [Area Grafik Batang Hijau]
-                </div>
-                <div class="text-center mt-4">
-                    <button id="toggle-analysis-main" class="bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm font-medium px-4 py-1.5 rounded-full transition-colors inline-flex items-center gap-2">
-                        <span id="toggle-analysis-main-label">Buka Analisis ▾</span>
-                    </button>
-                </div>
 
-                <div id="analysis-main" class="mt-4 bg-[#F0F7E6] p-4 rounded-xl border border-[#E1EFD6] hidden">
-                    <strong class="block text-[#4A6B2F] mb-1">Analisis Sistem:</strong>
-                    <p class="text-sm text-gray-600 mb-2">Mood anda mengalami penurunan signifikan pada hari tersebut. Data jurnal menunjukkan catatan seperti "Merasa sangat lelah" dan "Kurang tidur", yang konsisten dengan penurunan skor mood di grafik.</p>
-                    <strong class="block text-[#4A6B2F] mb-1">Rekomendasi Aktivitas:</strong>
-                    <p class="text-sm text-gray-600 mb-2">Prioritaskan tidur 7-8 jam pada hari berikutnya. Coba hentikan kafein setelah jam 15:00 dan lakukan relaksasi ringan sebelum tidur (meditasi 10 menit, peregangan).</p>
-                    <strong class="block text-[#4A6B2F] mb-1">Detail Visualisasi:</strong>
-                    <p class="text-sm text-gray-600">Grafik batang menunjukkan frekuensi mood sepanjang hari. Batang tinggi pada jam tertentu menunjukkan periode mood yang lebih positif; perhatikan pola waktu (pagi/siang/malam) untuk mengidentifikasi pemicu.</p>
-                </div>
+                @if(count($chartValues) > 0)
+                    
+                    <div class="w-full relative" style="height: 350px;">
+                        <canvas id="moodChart"></canvas>
+                    </div>
+
+                    <div class="text-center mt-6">
+                        <button id="toggle-analysis-main" class="bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm font-medium px-4 py-1.5 rounded-full transition-colors inline-flex items-center gap-2">
+                            <span id="toggle-analysis-main-label">Buka Analisis ▾</span>
+                        </button>
+                    </div>
+
+                    <div id="analysis-main" class="mt-4 bg-[#F0F7E6] p-4 rounded-xl border border-[#E1EFD6] hidden">
+                        <strong class="block text-[#4A6B2F] mb-1">Analisis Sistem:</strong>
+                        <p class="text-sm text-gray-600 mb-2">{{ $moodAnalysisText }}</p>
+                        
+                        <strong class="block text-[#4A6B2F] mb-1">Rekomendasi Aktivitas:</strong>
+                        <p class="text-sm text-gray-600 mb-2">{{ $moodRecommendationText }}</p>
+                        
+                        <strong class="block text-[#4A6B2F] mb-1">Detail Visualisasi:</strong>
+                        <p class="text-sm text-gray-600">{{ $moodDetailText }}</p>
+                    </div>
+
+                @else
+
+                    {{-- KONDISI 2: TIDAK ADA DATA (Tampilkan Pesan Kosong / Empty State) --}}
+                    
+                    <div class="w-full h-[350px] flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        
+                        <p class="text-sm font-medium text-gray-500">Belum ada data mood hari ini</p>
+                        <p class="text-xs mt-1 text-gray-400">Silakan rekam mood Anda di menu Mood Tracker</p>
+                        
+                        <a href="{{ url('/mood-tracker') }}" class="mt-4 px-4 py-2 bg-white border border-gray-300 rounded-full text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors shadow-sm">
+                            + Input Mood Sekarang
+                        </a>
+                    </div>
+
+                @endif
+                
             </div>
 
             <div>
                 <h5 class="font-bold text-gray-800 text-lg mb-4">Riwayat Jurnal</h5>
                 
                 <div class="space-y-4">
-                    @for ($i = 1; $i <= 3; $i++)
+                    @forelse($journals as $jurnal)
                     <div class="bg-[#F0F7E6] p-4 rounded-xl shadow-[2px_3px_15px_-3px_rgba(0,0,0,0.25)] mb-0 border border-transparent hover:border-[#7FBC4E] transition-all">
                         <div class="flex justify-between items-start">
                             <div class="max-w-[75%]">
-                                <span class="inline-block bg-[#7FBC4E] text-white text-xs px-3 py-1 rounded-full mb-2">Hari yang produktif untuk berangkat kerja.</span>
-                                <p class="text-sm text-gray-600">Baru saja saya berusaha memulai hari ini dengan produktif, karena... <a href="#" class="underline text-[#4A6B2F]">Baca Selengkapnya</a></p>
+                                <span class="inline-block bg-[#7FBC4E] text-white text-xs px-3 py-1 rounded-full mb-2">Jurnal Harian</span>
+                                
+                                <p class="text-sm text-gray-600">
+                                    {{ Str::limit($jurnal->isi, 100) }} 
+                                    <a href="#" class="underline text-[#4A6B2F]">Baca Selengkapnya</a>
+                                </p>
                             </div>
-                            <small class="text-gray-400 text-xs font-medium whitespace-nowrap ml-4">28 Des 2025</small>
+                            <small class="text-gray-400 text-xs font-medium whitespace-nowrap ml-4">
+                                {{ \Carbon\Carbon::parse($jurnal->created_at)->format('d M Y') }}
+                            </small>
                         </div>
                     </div>
-                    @endfor
-                </div>
-
-                <div class="text-center mt-4">
-                    <a href="#" class="inline-block bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 text-sm font-medium px-5 py-2 mt-2 rounded-full shadow-[2px_3px_15px_-3px_rgba(0,0,0,0.25)] transition-all">
-                        Lihat Semua Jurnal ›
-                    </a>
+                    @empty
+                    <div class="text-center text-gray-500 py-4">
+                        Belum ada jurnal hari ini.
+                    </div>
+                    @endforelse
                 </div>
             </div>
 
@@ -99,10 +151,10 @@
                 <h5 class="font-bold text-gray-800 text-lg text-left mb-4">Aktivitas Habit Log</h5>
                 
                 <div class="flex justify-center my-4">
-                    <div class="w-44 h-44 rounded-full p-3" style="background: conic-gradient(#7FBC4E 0% {{ $persenHabit }}%, #EEF9EE {{ $persenHabit }}% 100%);">
+                    <div class="w-44 h-44 rounded-full p-3" style="background: conic-gradient(#7FBC4E 0% {{ $habitPercentage }}%, #EEF9EE {{ $habitPercentage }}% 100%);">
                         <div class="bg-white rounded-full w-full h-full flex items-center justify-center">
                             <div class="text-center">
-                                <h3 class="text-3xl font-bold text-gray-800 leading-none">{{ $persenHabit }}%</h3>
+                                <h3 class="text-3xl font-bold text-gray-800 leading-none">{{ $habitPercentage }}%</h3>
                                 <small class="text-gray-500 text-sm">Tercapai</small>
                             </div>
                         </div>
@@ -110,22 +162,22 @@
                 </div>
 
                 <div class="text-left space-y-4 mt-4">
+                    @foreach($allHabits as $habit)
                     <div class="flex items-start gap-3">
-                        <span class="flex-none w-7 h-7 rounded-md bg-[#7FBC4E] text-white flex items-center justify-center shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" stroke="white"/>
-                            </svg>
+                        <span class="flex-none w-7 h-7 rounded-md {{ $habit->status ? 'bg-[#7FBC4E]' : 'bg-gray-300' }} text-white flex items-center justify-center shadow-sm">
+                            @if($habit->status)
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" stroke="white"/>
+                                </svg>
+                            @else
+                                <span class="text-white font-bold">-</span>
+                            @endif
                         </span>
-                        <label class="text-gray-700 text-sm font-medium">Olahraga 15 Menit</label>
+                        <label class="text-gray-700 text-sm font-medium">
+                            {{ $habit->habit->nama ?? 'Habit' }}
+                        </label>
                     </div>
-                    <div class="flex items-start gap-3">
-                        <span class="flex-none w-7 h-7 rounded-md bg-[#7FBC4E] text-white flex items-center justify-center shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" stroke="white"/>
-                            </svg>
-                        </span>
-                        <label class="text-gray-700 text-sm font-medium">Minum Air 2 Liter</label>
-                    </div>
+                    @endforeach
                 </div>
 
                 <div class="text-center mt-4">
@@ -138,53 +190,45 @@
                 </div>
                 <div id="analysis-habit" class="mt-4 bg-[#F7FFF4] p-4 rounded-xl border border-[#E7F6DF] text-left text-sm text-gray-700">
                     <strong class="block text-[#4A6B2F] mb-2">Analisis Sistem</strong>
-                    <p class="text-sm">Progres pencapaian habit anda hari ini sudah sangat baik, kurang 20% lagi anda mencapai tahap sempurna. Lanjutkan, semoga konsisten.</p>
+                    <p class="text-sm">{{ $habitAnalysis }}</p>
                 </div>
             </div>
             <div class="bg-white rounded-2xl shadow-[2px_3px_15px_-3px_rgba(0,0,0,0.25)] p-6">
                 <h5 class="font-bold text-gray-800 text-lg mb-4">Progres Healing Plan</h5>
+
                 <div class="w-full mb-4">
-                    <div class="w-full bg-[#EEF9EE] rounded-full p-1">
-                        <div class="bg-[#7FBC4E] text-white font-bold rounded-full h-10 flex items-center justify-center shadow-sm" style="width:75%; min-width:72px;">
-                            <span class="px-4">75% Selesai</span>
+                    <div class="w-full bg-[#EEF9EE] rounded-full h-9 relative overflow-hidden">
+                        
+                        <div class="bg-[#7FBC4E] h-full rounded-full transition-all duration-500 ease-out" 
+                            style="width: {{ $healingPercentage }}%">
                         </div>
+
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-sm font-bold {{ $healingPercentage > 55 ? 'text-white' : 'text-[#4A6B2F]' }}">
+                                {{ $healingPercentage }}% Selesai
+                            </span>
+                        </div>
+
                     </div>
                 </div>
+
                 <ul class="space-y-3 text-sm text-gray-600">
-    
+                    @foreach($allHealing as $plan)
                     <li class="flex items-center gap-3">
-                        <span class="w-6 h-6 bg-[#7FBC4E] rounded flex items-center justify-center shrink-0">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                        <span class="w-6 h-6 {{ $plan->status ? 'bg-[#7FBC4E]' : 'bg-gray-100 border-2 border-gray-300' }} rounded flex items-center justify-center shrink-0">
+                            @if($plan->status)
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            @endif
                         </span>
-                        <span class="font-medium">Baca Buku</span>
-                    </li>
-
-                    <li class="flex items-center gap-3">
-                        <span class="w-6 h-6 bg-[#7FBC4E] rounded flex items-center justify-center shrink-0">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                            </svg>
+                        
+                        <span class="{{ $plan->status ? 'font-medium text-gray-800' : 'text-gray-400' }}">
+                            {{ $plan->masterHealingPlan->nama_kegiatan ?? 'Kegiatan' }} 
+                            {{ $plan->status ? '' : '(Belum)' }}
                         </span>
-                        <span class="font-medium">Nonton Film</span>
                     </li>
-
-                    <li class="flex items-center gap-3">
-                        <span class="w-6 h-6 bg-[#7FBC4E] rounded flex items-center justify-center shrink-0">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                        </span>
-                        <span class="font-medium">Stretching Tipis</span>
-                    </li>
-
-                    <li class="flex items-center gap-3">
-                        <span class="w-6 h-6 border-2 border-gray-300 rounded flex items-center justify-center shrink-0 bg-gray-50">
-                            </span>
-                        <span class="text-gray-400">Berenang (Belum)</span>
-                    </li>
-
+                    @endforeach
                 </ul>
                 <div class="text-center mt-4">
                     <button id="toggle-analysis-healing" class="bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 text-sm font-medium px-4 py-1.5 rounded-full shadow-sm transition-colors inline-flex items-center gap-2">
@@ -199,8 +243,56 @@
         </div>
         </div> </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('moodChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: @json($chartLabels), 
+                    datasets: [{
+                        label: 'Tingkat Mood',
+                        data: @json($chartValues), 
+                        backgroundColor: @json($chartColors), 
+                        borderRadius: 10,
+                        barThickness: 30,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Penting agar ngikutin tinggi style="350px"
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return 'Jam: ' + context[0].label[1]; 
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            grid: { color: '#f3f4f6', borderDash: [5, 5] },
+                            ticks: { display: false },
+                            border: { display: false }
+                        },
+                        x: {
+                            grid: { display: false },
+                            border: { display: false },
+                            ticks: { font: { size: 14 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- 2. SCRIPT TOGGLE ANALISIS (TETAP SAMA) ---
         const btnMain = document.getElementById('toggle-analysis-main');
         const panelMain = document.getElementById('analysis-main');
         const labelMain = document.getElementById('toggle-analysis-main-label');
@@ -231,9 +323,9 @@
         if (btnHabit && panelHabit && labelHabit) {
             btnHabit.addEventListener('click', () => toggle(panelHabit, labelHabit, 'Buka Analisis ▾', 'Tutup Analisis ▴'));
         }
-            if (btnHealing && panelHealing && labelHealing) {
-                btnHealing.addEventListener('click', () => toggle(panelHealing, labelHealing, 'Buka Analisis ▾', 'Tutup Analisis ▴'));
-            }
+        if (btnHealing && panelHealing && labelHealing) {
+            btnHealing.addEventListener('click', () => toggle(panelHealing, labelHealing, 'Buka Analisis ▾', 'Tutup Analisis ▴'));
+        }
     });
 </script>
 @endsection

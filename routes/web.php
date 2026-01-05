@@ -6,6 +6,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\HabitLogController;
 use App\Http\Controllers\auth\login as LoginController;
 use App\Http\Controllers\auth\register as RegisterController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,8 +25,12 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->midd
 
 // Protected Routes (must be authenticated)
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth'])
+    ->name('dashboard');
     Route::get('/track-record', [TrackRecordController::class, 'index'])->name('track-record');
     Route::get('/about', [AboutController::class, 'index'])->name('about');
+    Route::get('/track-record/cetak-pdf', [App\Http\Controllers\TrackRecordController::class, 'cetakPdf'])->name('track-record.cetak');
     Route::get('/habit-log', [HabitLogController::class, 'index'])->name('habit-log');
     Route::post('/habit-log/toggle', [HabitLogController::class, 'toggle'])->name('habit-log.toggle');
     Route::post('/habit-log/store', [HabitLogController::class, 'store'])->name('habit-log.store');
