@@ -32,5 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/habit-log/store', [HabitLogController::class, 'store'])->name('habit-log.store');
     Route::get('/healing-plan', [HealingPlanController::class, 'index'])->name('healing-plan');
     Route::post('/healing-pilih', [HealingPlanController::class, 'pilih'])->name('healing.pilih');
+    Route::post('/healing-plan/toggle', [HealingPlanController::class, 'toggleActivity'])->name('healing.toggle');
+    Route::post('/healing-plan/save-progress', [App\Http\Controllers\HealingPlanController::class, 'saveProgress'])->name('healing.save');
 
 });

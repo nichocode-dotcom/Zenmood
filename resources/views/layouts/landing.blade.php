@@ -97,16 +97,10 @@
                                 Produk
                             </a>
                         </li>
-                        <li class="lg:hidden mt-4">
-                            <a href="/login"
-                                class="inline-block border-2 border-[#4A6B2F] text-[#4A6B2F] hover:bg-[#4A6B2F] hover:text-white font-bold rounded-full px-8 py-2 transition-all duration-300">
-                                SIGN IN
-                            </a>
-                        </li>
                     </ul>
                 </div>
                 <div class="hidden lg:flex justify-end">
-                    <a href="/login"
+                    <a href="{{ route('login') }}"
                         class="border-2 border-[#4A6B2F] text-[#4A6B2F] hover:bg-[#4A6B2F] hover:text-white font-bold rounded-full px-6 py-2 transition-all duration-300 text-sm lg:text-base whitespace-nowrap">
                         SIGN IN
                     </a>

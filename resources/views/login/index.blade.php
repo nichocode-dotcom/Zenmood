@@ -1,5 +1,4 @@
 @extends('layouts.app') 
-
 <div class="min-h-screen bg-gray-100 flex items-center justify-center p-4 font-['Poppins']">
     <div class="flex flex-col md:flex-row w-full max-w-4xl bg-white rounded-[2rem] overflow-hidden shadow-2xl min-h-[500px]">
         
