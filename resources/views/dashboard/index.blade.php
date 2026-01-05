@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="min-h-screen bg-transparent p-6"> <div class="max-w-6xl mx-auto mb-8">
-        <div class="bg-white rounded-2xl p-6 shadow-sm text-center relative overflow-hidden">
+        <div class="bg-transparent rounded-2xl p-6 shadow-xl text-center relative overflow-hidden">
             <div class="relative z-10">
                 <p class="text-gray-500 italic text-sm mb-1">“{{ $quote }}”</p>
                 <p class="text-[#7FBC4E] font-bold text-xs">ZenMood</p>
@@ -15,7 +16,7 @@
 
         <div class="lg:col-span-5 space-y-6">
             
-            <div class="bg-[#7FBC4E] rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
+            <div class="bg-[#7FBC4E] rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
                 <h3 class="font-medium mb-6">Kondisi Mental</h3>
                 
                 <div class="relative h-4 bg-white/30 rounded-full mb-4">
@@ -28,21 +29,29 @@
                 <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-white/10 rounded-full"></div>
             </div>
 
-            <div class="bg-white rounded-3xl p-6 shadow-sm">
+            <div class="bg-white rounded-3xl p-6 shadow-xl">
                 <h3 class="text-[#7FBC4E] font-bold text-center mb-6">Recent Activities</h3>
                 <div class="space-y-3">
                     @forelse($recentActivities as $activity)
-                    <div class="flex items-center bg-[#7FBC4E] text-white rounded-full px-4 py-3 shadow-sm">
-                        <span class="font-bold text-xs w-20">{{ \Carbon\Carbon::parse($activity->created_at)->format('h:i A') }}</span>
-                        <div class="mx-2 text-white">
+                    <div class="flex items-center bg-[#7FBC4E] text-white rounded-full px-4 py-3 shadow-sm transition-transform hover:scale-105">
+                        <span class="font-bold text-xs w-20 text-center border-r border-white/30 pr-2">
+                            {{ \Carbon\Carbon::parse($activity->created_at)->format('h:i A') }}
+                        </span>
+                        
+                        <div class="mx-3 text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
                             </svg>
                         </div>
-                        <span class="font-medium text-sm flex-1 text-center">{{ $activity->aktivitas->nama ?? 'Aktivitas Umum' }}</span>
+                        
+                        <span class="font-medium text-sm flex-1 truncate">
+                            {{ $activity->aktivitas->nama ?? 'Aktivitas Umum' }}
+                        </span>
                     </div>
                     @empty
-                    <p class="text-gray-400 text-center text-sm italic">Belum ada aktivitas hari ini.</p>
+                    <div class="text-center py-4">
+                        <p class="text-gray-400 text-sm italic">Belum ada aktivitas hari ini.</p>
+                    </div>
                     @endforelse
                 </div>
             </div>
@@ -51,21 +60,36 @@
 
         <div class="lg:col-span-7 space-y-6">
             
-            <div class="bg-white rounded-3xl p-6 shadow-sm border border-green-50">
+            <div class="bg-white rounded-3xl p-6 shadow-xl border border-green-50 min-h-[350px] flex flex-col">
                 <h3 class="text-[#4A6B2F] font-bold mb-4">Mood Tracker Emosional</h3>
-                <div class="relative h-48 w-full">
-                    <canvas id="dashboardMoodChart"></canvas>
-                </div>
-                <div class="flex justify-between px-2 mt-2 text-xs text-gray-400">
-                    <span class="text-center">😆<br>Sangat Bahagia</span>
-                    <span class="text-center">😊<br>Senang</span>
-                    <span class="text-center">😐<br>Biasa Saja</span>
-                    <span class="text-center">😔<br>Sedih</span>
-                    <span class="text-center">😡<br>Marah</span>
-                </div>
+
+                @if(count($chartValues) > 0)
+                    
+                    <div class="relative w-full flex-1 min-h-[200px]">
+                        <canvas id="dashboardMoodChart"></canvas>
+                    </div>
+
+                @else
+
+                    <div class="w-full h-full flex-1 flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 py-8">
+                        
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        
+                        <p class="text-sm font-medium text-gray-500">Belum ada data mood hari ini</p>
+                        <p class="text-xs mt-1 text-gray-400">Silakan rekam mood Anda di menu Mood Tracker</p>
+                        
+                        {{-- Pastikan route ini benar --}}
+                        <a href="#" class="mt-4 px-4 py-2 bg-white border border-gray-300 rounded-full text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors shadow-sm">
+                            + Input Mood Sekarang
+                        </a>
+                    </div>
+
+                @endif
             </div>
 
-            <div class="bg-[#7FBC4E] rounded-3xl p-6 text-white shadow-lg">
+            <div class="bg-[#7FBC4E] rounded-3xl p-6 text-white shadow-xl">
                 <h3 class="font-medium mb-4">Progres Pencapaian Habit</h3>
                 
                 <div class="relative h-4 bg-black/20 rounded-full mb-2 overflow-hidden">
@@ -76,13 +100,13 @@
                      <div class="absolute top-0 h-6 w-6 bg-white border-4 border-[#7FBC4E] rounded-full shadow-sm transition-all duration-1000" style="left: calc({{ $habitPercent }}% - 10px)"></div>
                 </div>
 
-                <p class="text-sm font-medium opacity-90">{{ $doneHabit }} dari {{ $totalHabit }} selesai</p>
+                <p class="text-sm font-medium opacity-90">{{ $doneHabit }} dari {{ $totalHabit }} selesai ({{ $habitPercent }}%)</p>
             </div>
 
         </div>
         
         <div class="lg:col-span-12">
-            <div class="bg-white rounded-3xl p-4 shadow-sm flex items-center justify-between border border-gray-100">
+            <div class="bg-white rounded-3xl p-4 shadow-xl flex items-center justify-between border border-gray-100">
                 <div class="flex items-center gap-4">
                     <div class="h-12 w-12 rounded-full border-2 border-[#7FBC4E] flex items-center justify-center text-[#7FBC4E]">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -108,27 +132,68 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const ctx = document.getElementById('dashboardMoodChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: @json($chartLabels),
-            datasets: [{
-                label: 'Skor Mood',
-                data: @json($chartValues),
-                backgroundColor: '#7FBC4E',
-                borderRadius: 4,
-                barThickness: 20,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { display: false, min: 0, max: 10 },
-                x: { grid: { display: false }, ticks: { font: { size: 10 } } }
-            }
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctxElement = document.getElementById('dashboardMoodChart');
+        
+        if (ctxElement) {
+            const ctx = ctxElement.getContext('2d');
+            
+            const labels = {!! json_encode($chartLabels) !!};
+            const values = {!! json_encode($chartValues) !!};
+            const emojis = {!! json_encode($chartEmojis) !!};
+            const colors = {!! json_encode($chartColors) !!}; 
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Skor Mood',
+                        data: values,
+                        backgroundColor: colors, 
+                        borderRadius: 4,
+                        barThickness: 20,
+                        maxBarThickness: 30,
+                    }]
+                },
+                
+                options: { 
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].label; 
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { 
+                            display: false, 
+                            min: 0, 
+                            max: 12 
+                        },
+                        x: { 
+                            grid: { display: false, drawBorder: false }, 
+                            ticks: { 
+                                color: '#666',
+                                font: { size: 12 },
+                                callback: function(value, index, values) {
+                                    const jam = this.getLabelForValue(value);
+                                    const emoji = emojis[index]; 
+                                    return [jam, emoji];
+                                }
+                            } 
+                        }
+                    },
+                    layout: { 
+                        padding: { bottom: 10 } 
+                    }
+                }
+            });
         }
     });
 </script>

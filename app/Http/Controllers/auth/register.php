@@ -34,8 +34,6 @@ class register extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        Auth::login($user);
-
-        return redirect()->route('habit-log');
+        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login dengan akun yang baru dibuat.');
     }
 }

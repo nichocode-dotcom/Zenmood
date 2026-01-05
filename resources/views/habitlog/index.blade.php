@@ -296,6 +296,7 @@ function submitHabit(event) {
     const formData = {
         nama: document.getElementById('habit-nama').value,
         target_harian: document.getElementById('habit-target').value,
+        icon: document.getElementById('selected-icon').value,
         _token: '{{ csrf_token() }}'
     };
 
