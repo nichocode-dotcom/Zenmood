@@ -84,11 +84,17 @@
                 <div class="mb-6 relative z-10">
                     <h3 class="text-[#558B2F] text-[18px] sm:text-[20px] lg:text-[22px] font-bold mb-3">Kategori Aktivitas Utama</h3>
                     <div class="flex flex-col sm:flex-row gap-2">
-                        <button type="button" onclick="selectCategory('Aktivitas Fisik', this)" class="category-btn selected-category bg-[#72B940] text-white px-6 sm:px-8 py-3 rounded-full text-[14px] sm:text-[15px] font-semibold shadow-md border-2 border-[#72B940] transition-all">
-                            Aktivitas Fisik
+                        <button type="button" onclick="selectCategory('Fisik', this)" class="category-btn selected-category bg-[#72B940] text-white px-6 sm:px-8 py-3 rounded-full text-[14px] sm:text-[15px] font-semibold shadow-md border-2 border-[#72B940] transition-all">
+                            Fisik
                         </button>
-                        <button type="button" onclick="selectCategory('Mental / Non-Fisik', this)" class="category-btn bg-white text-[#72B940] px-6 sm:px-8 py-3 rounded-full text-[14px] sm:text-[15px] font-semibold border-2 border-[#72B940] hover:bg-gray-50 transition-all">
-                            Non-Fisik / Mental
+                        <button type="button" onclick="selectCategory('Non-Fisik', this)" class="category-btn bg-white text-[#72B940] px-6 sm:px-8 py-3 rounded-full text-[14px] sm:text-[15px] font-semibold border-2 border-[#72B940] hover:bg-gray-50 transition-all">
+                            Non-Fisik 
+                        </button>
+                        <button type="button" onclick="selectCategory('Sosial', this)" class="category-btn bg-white text-[#72B940] px-6 sm:px-8 py-3 rounded-full text-[14px] sm:text-[15px] font-semibold border-2 border-[#72B940] hover:bg-gray-50 transition-all">
+                            Sosial
+                        </button>
+                        <button type="button" onclick="selectCategory('Relaksasi', this)" class="category-btn bg-white text-[#72B940] px-6 sm:px-8 py-3 rounded-full text-[14px] sm:text-[15px] font-semibold border-2 border-[#72B940] hover:bg-gray-50 transition-all">
+                            Relaksasi
                         </button>
                     </div>
                 </div>

@@ -34,70 +34,88 @@
             </div>
         </div>
 
-        <div id="active-section" class="mb-12 {{ count($activeActivities) > 0 ? '' : 'hidden' }} animate-in fade-in slide-in-from-top-4 duration-500">
-            <h2 class="text-2xl font-bold text-[#558B2F] mb-8 flex items-center gap-3">
-                <span class="w-2 h-8 bg-[#558B2F] rounded-full"></span> Pilihan Aktif
-            </h2>
-            <div id="active-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @foreach($activeActivities as $act)
-                    @php $percent = $act['is_completed'] ? 100 : 50; @endphp
-                    <div class="bg-lime-50 border border-lime-200 rounded-[2.5rem] p-6 shadow-sm flex flex-col h-full cursor-pointer hover:shadow-md transition-all"
-                         onclick="openModal(this)"
-                         data-id="{{ $act['id_healing'] }}" data-title="{{ $act['title'] }}" data-desc="{{ $act['description'] }}"
-                         data-icon="{{ asset('img/' . $act['icon']) }}" data-poin="{{ $act['poin'] }}" data-steps='@json($act['steps'])'
-                         data-is-utama="{{ $act['is_utama'] }}"> <div class="flex items-center gap-4 mb-4">
-                            <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm"><img src="{{ asset('img/' . $act['icon']) }}" class="w-8 h-8 object-contain"></div>
-                            <div><h3 class="font-bold text-[#558B2F]">{{ $act['title'] }}</h3><span class="text-xs font-semibold text-[#72B940]">Sedang Berjalan</span></div>
-                        </div>
-                        <div class="w-full bg-white rounded-full h-3 mb-2 overflow-hidden border border-lime-100"><div class="bg-lime-500 h-3 rounded-full transition-all" style="width: {{ $percent }}%"></div></div>
-                        <div class="flex justify-between text-xs text-lime-700 font-medium mt-auto"><span>Status</span><span>{{ $percent }}%</span></div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-
-        <div class="mb-12">
-            <h2 class="text-2xl font-bold text-[#558B2F] mb-8 flex items-center gap-3">
-                <span class="w-2 h-8 bg-[#558B2F] rounded-full"></span> Rekomendasi utama saat ini
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                @foreach($mainRecommendations as $rec)
-                    <div class="bg-white rounded-[2.5rem] shadow-sm overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group border border-gray-100 flex flex-col h-full" 
-                         onclick="openModal(this)"
-                         data-id="{{ $rec['id_healing'] }}" data-title="{{ $rec['title'] }}" data-desc="{{ $rec['description'] }}"
-                         data-icon="{{ asset('img/' . $rec['icon']) }}" data-poin="{{ $rec['poin'] }}" data-steps='@json($rec['steps'])'
-                         data-is-utama="1"> <div class="{{ $rec['color'] }} h-3 w-full"></div>
-                        <div class="p-8 flex-grow flex flex-col">
-                            <div class="flex items-start justify-between mb-6">
-                                <div class="flex items-center space-x-4">
-                                    <div class="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform"><img src="{{ asset('img/' . $rec['icon']) }}" class="w-10 h-10 object-contain"></div>
-                                    <div><h3 class="font-bold text-xl text-[#558B2F] leading-tight">{{ $rec['title'] }}</h3><span class="text-xs font-bold text-[#72B940] uppercase tracking-[0.1em]">{{ $rec['category'] }}</span></div>
-                                </div>
+        @if($hasMood)
+            
+            <div id="active-section" class="mb-12 {{ count($activeActivities) > 0 ? '' : 'hidden' }} animate-in fade-in slide-in-from-top-4 duration-500">
+                <h2 class="text-2xl font-bold text-[#558B2F] mb-8 flex items-center gap-3">
+                    <span class="w-2 h-8 bg-[#558B2F] rounded-full"></span> Pilihan Aktif
+                </h2>
+                <div id="active-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($activeActivities as $act)
+                        @php $percent = $act['is_completed'] ? 100 : 50; @endphp
+                        <div class="bg-lime-50 border border-lime-200 rounded-[2.5rem] p-6 shadow-sm flex flex-col h-full cursor-pointer hover:shadow-md transition-all"
+                             onclick="openModal(this)"
+                             data-id="{{ $act['id_healing'] }}" data-title="{{ $act['title'] }}" data-desc="{{ $act['description'] }}"
+                             data-icon="{{ asset('img/' . $act['icon']) }}" data-poin="{{ $act['poin'] }}" data-steps='@json($act['steps'])'
+                             data-is-utama="{{ $act['is_utama'] }}"> 
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm"><img src="{{ asset('img/' . $act['icon']) }}" class="w-8 h-8 object-contain"></div>
+                                <div><h3 class="font-bold text-[#558B2F]">{{ $act['title'] }}</h3><span class="text-xs font-semibold text-[#72B940]">Sedang Berjalan</span></div>
                             </div>
-                            <p class="text-[#4A7829] mb-8 line-clamp-3 text-sm leading-relaxed font-medium flex-grow">{{ $rec['description'] }}</p>
-                            <div class="flex justify-between items-center pt-6 border-t border-gray-50 mt-auto"><span class="text-[#558B2F] hover:text-[#72B940] font-bold text-sm flex items-center transition-colors">Lihat rekomendasi</span><span class="text-[10px] font-black bg-green-50 text-[#558B2F] px-4 py-1.5 rounded-full uppercase tracking-tighter">Direkomendasikan</span></div>
+                            <div class="w-full bg-white rounded-full h-3 mb-2 overflow-hidden border border-lime-100"><div class="bg-lime-500 h-3 rounded-full transition-all" style="width: {{ $percent }}%"></div></div>
+                            <div class="flex justify-between text-xs text-lime-700 font-medium mt-auto"><span>Status</span><span>{{ $percent }}%</span></div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
-        </div>
 
-        <div class="mb-16">
-            <h2 class="text-2xl font-bold text-[#558B2F] flex items-center gap-3 mb-8"><span class="w-2 h-8 bg-[#558B2F] rounded-full"></span> Alternatif Kegiatan Lainnya</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-                @foreach($alternativeActivities as $activity)
-                    <div class="bg-white rounded-[2rem] shadow-sm p-6 hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-50 flex flex-col items-center text-center group h-full"
-                         onclick="openModal(this)"
-                         data-id="{{ $activity['id_healing'] }}" data-title="{{ $activity['title'] }}" data-desc="{{ $activity['description'] }}"
-                         data-icon="{{ asset('img/' . $activity['icon']) }}" data-poin="{{ $activity['poin'] }}" data-steps='@json($activity['steps'])'
-                         data-is-utama="0"> <div class="w-20 h-20 rounded-2xl flex items-center justify-center mb-5 bg-green-50 group-hover:bg-green-100 transition-colors"><img src="{{ asset('img/' . $activity['icon']) }}" class="w-12 h-12 object-contain"></div>
-                        <h3 class="font-bold text-[#558B2F] mb-2">{{ $activity['title'] }}</h3><span class="text-xs font-semibold text-[#72B940] mb-4 uppercase tracking-tighter">{{ $activity['category'] }}</span>
-                        <p class="text-[11px] text-[#4A7829] mb-6 line-clamp-2 leading-relaxed">{{ $activity['description'] }}</p>
-                        <button class="bg-[#72B940] hover:bg-[#558B2F] text-white text-xs font-bold py-2.5 px-4 rounded-xl w-full transition-all shadow-md mt-auto">Pilih</button>
-                    </div>
-                @endforeach
+            <div class="mb-12">
+                <h2 class="text-2xl font-bold text-[#558B2F] mb-8 flex items-center gap-3">
+                    <span class="w-2 h-8 bg-[#558B2F] rounded-full"></span> Rekomendasi untukmu hari ini
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach($mainRecommendations as $rec)
+                        <div class="bg-white rounded-[2.5rem] shadow-sm overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer group border border-gray-100 flex flex-col h-full" 
+                             onclick="openModal(this)"
+                             data-id="{{ $rec['id_healing'] }}" data-title="{{ $rec['title'] }}" data-desc="{{ $rec['description'] }}"
+                             data-icon="{{ asset('img/' . $rec['icon']) }}" data-poin="{{ $rec['poin'] }}" data-steps='@json($rec['steps'])'
+                             data-is-utama="1"> <div class="{{ $rec['color'] }} h-3 w-full"></div>
+                            <div class="p-8 flex-grow flex flex-col">
+                                <div class="flex items-start justify-between mb-6">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform"><img src="{{ asset('img/' . $rec['icon']) }}" class="w-10 h-10 object-contain"></div>
+                                        <div><h3 class="font-bold text-xl text-[#558B2F] leading-tight">{{ $rec['title'] }}</h3><span class="text-xs font-bold text-[#72B940] uppercase tracking-[0.1em]">{{ $rec['category'] }}</span></div>
+                                    </div>
+                                </div>
+                                <p class="text-[#4A7829] mb-8 line-clamp-3 text-sm leading-relaxed font-medium flex-grow">{{ $rec['description'] }}</p>
+                                <div class="flex justify-between items-center pt-6 border-t border-gray-50 mt-auto"><span class="text-[#558B2F] hover:text-[#72B940] font-bold text-sm flex items-center transition-colors">Lihat rekomendasi</span><span class="text-[10px] font-black bg-green-50 text-[#558B2F] px-4 py-1.5 rounded-full uppercase tracking-tighter">Pas buat kamu</span></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
-        </div>
+
+            <div class="mb-16">
+                <h2 class="text-2xl font-bold text-[#558B2F] flex items-center gap-3 mb-8"><span class="w-2 h-8 bg-[#558B2F] rounded-full"></span> Alternatif Kegiatan Lainnya</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                    @foreach($alternativeActivities as $activity)
+                        <div class="bg-white rounded-[2rem] shadow-sm p-6 hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-50 flex flex-col items-center text-center group h-full"
+                             onclick="openModal(this)"
+                             data-id="{{ $activity['id_healing'] }}" data-title="{{ $activity['title'] }}" data-desc="{{ $activity['description'] }}"
+                             data-icon="{{ asset('img/' . $activity['icon']) }}" data-poin="{{ $activity['poin'] }}" data-steps='@json($activity['steps'])'
+                             data-is-utama="0"> <div class="w-20 h-20 rounded-2xl flex items-center justify-center mb-5 bg-green-50 group-hover:bg-green-100 transition-colors"><img src="{{ asset('img/' . $activity['icon']) }}" class="w-12 h-12 object-contain"></div>
+                            <h3 class="font-bold text-[#558B2F] mb-2">{{ $activity['title'] }}</h3><span class="text-xs font-semibold text-[#72B940] mb-4 uppercase tracking-tighter">{{ $activity['category'] }}</span>
+                            <p class="text-[11px] text-[#4A7829] mb-6 line-clamp-2 leading-relaxed">{{ $activity['description'] }}</p>
+                            <button class="bg-[#72B940] hover:bg-[#558B2F] text-white text-xs font-bold py-2.5 px-4 rounded-xl w-full transition-all shadow-md mt-auto">Pilih</button>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+        @else
+            <div class="mb-12 bg-white rounded-[2.5rem] p-8 md:p-12 text-center border-2 border-dashed border-gray-200">
+                <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <span class="text-4xl">🤔</span>
+                </div>
+                <h3 class="text-2xl font-bold text-[#558B2F] mb-3">Kami belum tahu perasaanmu</h3>
+                <p class="text-gray-500 mb-8 max-w-lg mx-auto">Untuk mendapatkan rekomendasi aktivitas yang paling pas (termasuk pilihan aktif dan alternatif), silakan isi Mood Tracker hari ini terlebih dahulu.</p>
+                <a href="{{ route('mood-tracker') }}" class="inline-flex items-center gap-2 bg-[#72B940] hover:bg-[#558B2F] text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all hover:scale-105">
+                    <span>Isi Mood Tracker Sekarang</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </a>
+            </div>
+        @endif
+
     </div>
 </div>
 
@@ -135,7 +153,11 @@
             const savedData = localStorage.getItem(STORAGE_KEY_DATA);
             if (savedData) activityStates = JSON.parse(savedData);
         }
-        renderActiveSection(); 
+        
+        // Render Active Section hanya jika elementnya ada (karena bisa di-hide oleh PHP)
+        if (document.getElementById('active-container')) {
+            renderActiveSection(); 
+        }
         updateGlobalEnergy();
     }
     document.addEventListener("DOMContentLoaded", initChecklistSystem);
@@ -143,14 +165,10 @@
     function renderActiveSection() {
         const activeContainer = document.getElementById('active-container');
         const activeSection = document.getElementById('active-section');
-        // Jangan hapus isi container jika itu hasil render server (saat refresh)
-        // Kita hanya update/append jika ada interaksi lokal
-        // Namun, jika activityStates kosong, kita harus cek apakah server merender sesuatu.
         
-        // Agar sync, kita rebuild hanya jika activityStates punya data.
-        // Jika tidak, biarkan apa adanya dari server.
-        
-        // Simpelnya: Kita kosongkan dulu agar tidak duplikat, lalu loop.
+        // Pengecekan keamanan: Jika user dalam mode Empty State (PHP hide), elemen ini mungkin tidak ada
+        if (!activeContainer || !activeSection) return;
+
         activeContainer.innerHTML = ''; 
         let hasActiveActivities = false;
 
@@ -161,10 +179,6 @@
                 const data = activitiesDB[title];
                 const total = states.length;
                 const percent = Math.round((checkedCount/total)*100);
-                
-                // Disini kita tidak tahu is_utama secara pasti jika hanya dari local storage
-                // Tapi user tidak mempermasalahkan tampilan is_utama di kartu, yang penting DB
-                // Jadi kita set default 0 atau ambil dari data jika ada (tapi activitiesDB tidak simpan is_utama)
                 
                 const html = `
                 <div class="bg-lime-50 border border-lime-200 rounded-[2rem] p-6 shadow-sm flex flex-col h-full cursor-pointer hover:shadow-md transition-all"
@@ -183,19 +197,13 @@
             }
         }
         
-        // Jika lokal kosong, kita cek apakah server mengirim data aktif?
-        // Masalahnya JS menghapus container di awal fungsi ini.
-        // Solusi: Kita biarkan JS mengontrol UI Aktif sepenuhnya.
-        
+        // Tampilkan section hanya jika ada aktivitas aktif DAN server mengizinkan (tidak empty state)
         if (hasActiveActivities) {
             activeSection.classList.remove('hidden');
         } else {
-            // Cek apakah server mengirim data aktif (backup plan)
+            // Backup check jika server mengirim data tapi local storage kosong
             if (@json(count($activeActivities)) > 0 && Object.keys(activityStates).length === 0) {
-                 // Jika server kirim data tapi local kosong (misal beda browser), kita pakai server render
-                 // Caranya: Reload page ini, biarkan PHP render.
-                 // Tapi kita di sisi JS, jadi biarkan saja hidden kalau local kosong.
-                 activeSection.classList.add('hidden');
+                 // Biarkan logic PHP yang mengatur jika local kosong
             } else {
                  activeSection.classList.add('hidden');
             }
@@ -208,7 +216,7 @@
         const desc = element.getAttribute('data-desc');
         const iconSrc = element.getAttribute('data-icon');
         const poin = element.getAttribute('data-poin');
-        const isUtama = element.getAttribute('data-is-utama'); // AMBIL DARI HTML
+        const isUtama = element.getAttribute('data-is-utama');
 
         let steps = [];
         try { steps = JSON.parse(element.getAttribute('data-steps')); } catch(e) { steps = ['Mulai', 'Selesai']; }
@@ -216,7 +224,7 @@
         document.getElementById('current-id').value = id;
         document.getElementById('current-title').value = title;
         document.getElementById('current-poin').value = poin;
-        document.getElementById('current-is-utama').value = isUtama; // SIMPAN
+        document.getElementById('current-is-utama').value = isUtama;
         
         document.getElementById('modal-title').innerText = title;
         document.getElementById('modal-desc').innerText = desc;
@@ -248,13 +256,14 @@
         const title = document.getElementById('current-title').value;
         const index = checkbox.getAttribute('data-step-index');
         const idHealing = document.getElementById('current-id').value;
-        const isUtama = document.getElementById('current-is-utama').value; // AMBIL VALUE UTAMA
+        const isUtama = document.getElementById('current-is-utama').value;
         
         activityStates[title][index] = checkbox.checked;
         localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(activityStates));
 
         calculateVisual(title);
-        renderActiveSection();
+        // Cek dulu apakah fungsi render ada (karena di empty state fungsi ini mungkin error jika div tidak ada)
+        if (document.getElementById('active-container')) renderActiveSection();
         updateGlobalEnergy();
 
         const currentStates = activityStates[title];
@@ -263,7 +272,7 @@
         const percent = Math.round((checkedCount / total) * 100);
         
         const status = percent === 100 ? 1 : 0;
-        saveToDatabase(idHealing, status, isUtama); // KIRIM KE DB
+        saveToDatabase(idHealing, status, isUtama);
     }
 
     function calculateVisual(title) {
@@ -282,7 +291,7 @@
                 const data = activitiesDB[title];
                 const totalSteps = states.length;
                 const checkedSteps = states.filter(Boolean).length;
-                const maxPoints = parseInt(data.poin) || 0; // Fix NaN jika poin null
+                const maxPoints = parseInt(data.poin) || 0;
                 
                 if (totalSteps > 0) {
                     totalPoints += (checkedSteps / totalSteps) * maxPoints;
