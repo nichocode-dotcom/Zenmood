@@ -69,10 +69,11 @@
                         <canvas id="dashboardMoodChart"></canvas>
                     </div>
 
-                @else
+                 @else
 
-                    <div class="w-full h-full flex-1 flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50 py-8">
-                        
+                    {{-- KONDISI 2: TIDAK ADA DATA (Tampilkan Pesan Kosong / Empty State) --}}
+                    
+                    <div class="w-full h-[350px] flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -80,8 +81,7 @@
                         <p class="text-sm font-medium text-gray-500">Belum ada data mood hari ini</p>
                         <p class="text-xs mt-1 text-gray-400">Silakan rekam mood Anda di menu Mood Tracker</p>
                         
-                        {{-- Pastikan route ini benar --}}
-                        <a href="#" class="mt-4 px-4 py-2 bg-white border border-gray-300 rounded-full text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors shadow-sm">
+                        <a href="{{ url('/mood-tracker') }}" class="mt-4 px-4 py-2 bg-white border border-gray-300 rounded-full text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors shadow-sm">
                             + Input Mood Sekarang
                         </a>
                     </div>

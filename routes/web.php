@@ -9,6 +9,8 @@ use App\Http\Controllers\JournalController;
 // Import dari branch main (Auth)
 use App\Http\Controllers\auth\login as LoginController;
 use App\Http\Controllers\auth\register as RegisterController;
+use App\Http\Controllers\HealingPlanController;
+use App\Http\Controllers\MoodTrackController;
 use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
@@ -38,8 +40,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/habit-log', [HabitLogController::class, 'index'])->name('habit-log');
     Route::post('/habit-log/toggle', [HabitLogController::class, 'toggle'])->name('habit-log.toggle');
     Route::post('/habit-log/store', [HabitLogController::class, 'store'])->name('habit-log.store');
+    Route::get('/healing-plan', [HealingPlanController::class, 'index'])->name('healing-plan');
+    Route::post('/healing-pilih', [HealingPlanController::class, 'pilih'])->name('healing.pilih');
+    Route::post('/healing-plan/toggle', [HealingPlanController::class, 'toggleActivity'])->name('healing.toggle');
+    Route::post('/healing-plan/save-progress', [App\Http\Controllers\HealingPlanController::class, 'saveProgress'])->name('healing.save');
+    // Route Tampilan (GET)
+    Route::get('/mood-tracker', [MoodTrackController::class, 'index'])->name('mood-tracker');
 
-    // Fitur Journaling (Dimasukkan ke sini agar aman)
+    // Route Simpan Data (POST) - Tambahkan ini!
+    Route::post('/mood-tracker', [MoodTrackController::class, 'store'])->name('mood.store');
+
     Route::get('/journaling', [JournalController::class, 'index'])->name('journaling.index');
     Route::post('/journaling', [JournalController::class, 'store'])->name('journaling.store');
 });

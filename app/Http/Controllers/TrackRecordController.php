@@ -17,8 +17,13 @@ class TrackRecordController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $today = Carbon::now()->format('Y-m-d');
-        $selectedDate = $request->input('date', Carbon::now()->format('Y-m-d'));
+
+        if ($request->has("date")) {
+            $selectedDate = $request->input('date');
+            session(['selected_date' => $selectedDate]);
+        } else {
+            $selectedDate = session('selected_date', Carbon::now()->format('Y-m-d'));
+        }
         $today = $selectedDate;
         $todayMood = Mood::where('id_user', $user->id_user)
                         ->whereDate('created_at', $today)
@@ -74,7 +79,7 @@ class TrackRecordController extends Controller
 
         $allHealing = TransHealingPlan::where('id_user', $user->id_user)
                                     ->whereDate('created_at', $today)
-                                    ->with('masterHealingPlan') 
+                                    ->with('masterHealing') 
                                     ->get();
 
         $totalHealing = $allHealing->count();
@@ -91,18 +96,20 @@ class TrackRecordController extends Controller
         $chartColors = [];
 
         foreach ($todaysMoods as $mood) {
-            $jam = Carbon::parse($mood->created_at)->format('H:i');
+            $jam = Carbon::parse($mood->created_at)->timezone('Asia/Jakarta')->format('H:i');
+
+            $skorNumerik = (int)$mood->skor;
             
-            if ($mood->skor >= 9) {
+            if ($skorNumerik >= 9) {
                 $emoji = '🤩'; 
                 $color = '#4ade80'; 
-            } elseif ($mood->skor >= 7) {
+            } elseif ($skorNumerik >= 7) {
                 $emoji = '😊'; 
                 $color = '#a3e635'; 
-            } elseif ($mood->skor >= 5) {
+            } elseif ($skorNumerik >= 5) {
                 $emoji = '😐'; 
                 $color = '#facc15'; 
-            } elseif ($mood->skor >= 3) {
+            } elseif ($skorNumerik >= 3) {
                 $emoji = '😔'; 
                 $color = '#fb923c'; 
             } else {
@@ -110,8 +117,8 @@ class TrackRecordController extends Controller
                 $color = '#f87171'; 
             }
 
-            $chartLabels[] = [$emoji, $jam]; 
-            $chartValues[] = $mood->skor;
+            $chartLabels[] = $emoji . " " . $jam;
+            $chartValues[] = $skorNumerik;
             $chartColors[] = $color;
         }
 
@@ -140,8 +147,6 @@ class TrackRecordController extends Controller
             }
         }
 
-    
-    
         return view('track_record.index', compact(
             'user', 
             'selectedDate',

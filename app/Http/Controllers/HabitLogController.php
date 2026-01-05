@@ -13,7 +13,8 @@ class HabitLogController extends Controller
     public function index()
     {
         $userId = auth()->id();
-        $today = Carbon::today();
+        $sessionDate = session('selected_date', Carbon::now()->format('Y-m-d'));
+        $today = Carbon::parse($sessionDate);
 
         $cekharian = TransHabit::where('id_user', $userId)
             ->where('tanggal', $today->format('Y-m-d'))
@@ -90,6 +91,8 @@ class HabitLogController extends Controller
             'target_harian' => 'required|string|max:255',
         ]);
 
+        $sessionDate = session('selected_date', Carbon::now()->format('Y-m-d'));
+
         $habit = MasterHabit::create([
             'nama' => $request->input('nama'),
             'target_harian' => $request->input('target_harian'),
@@ -98,7 +101,7 @@ class HabitLogController extends Controller
         TransHabit::create([
             'id_user' => auth()->user()->id_user, 
             'id_habit' => $habit->id_habit,       
-            'tanggal' => Carbon::now()->format('Y-m-d'),
+            'tanggal' => $sessionDate,
             'status' => 0 
         ]);
 

@@ -15,11 +15,8 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $today = Carbon::today();
-
-        // --- 1. PERHITUNGAN KONDISI MENTAL (BATERAI) ---
+        $today = session('selected_date', Carbon::now()->format('Y-m-d'));
         
-        // A. Komponen Mood (40%)
         $todayMoods = Mood::where('id_user', $user->id_user)
                           ->whereDate('created_at', $today)
                           ->get();
@@ -39,7 +36,6 @@ class DashboardController extends Controller
         $habitScore = ($totalHabit > 0) ? ($doneHabit / $totalHabit) * 30 : 0;
         $habitPercent = ($totalHabit > 0) ? round(($doneHabit / $totalHabit) * 100) : 0;
 
-        // C. Komponen Journaling (30%)
         $latestJournal = Journal::where('id_user', $user->id_user)
                                 ->whereDate('tanggal', $today)
                                 ->latest()
@@ -47,30 +43,25 @@ class DashboardController extends Controller
         
         $journalScore = 0;
         if ($latestJournal) {
-            // Map skor -5 s/d 5 ke 0 s/d 30
             $journalScore = (($latestJournal->skor_analisis + 5) / 10) * 30;
         }
 
-        // Total Persentase Baterai
         $mentalConditionPercent = (int) round($moodScore + $habitScore + $journalScore);
         $mentalConditionPercent = max(0, min(100, $mentalConditionPercent));
 
-        // Update ke database user agar data tersinkron
         User::where('id_user', $user->id_user)->update([
             'battery_percentage' => $mentalConditionPercent
         ]);
 
-        // --- 2. DATA CHART (Grafik Mood Hari Ini) ---
         $chartLabels = [];
         $chartValues = [];
-        $chartEmojis = []; // Didefinisikan kosong agar tidak error jika tidak ada data
+        $chartEmojis = []; 
         $chartColors = [];
 
         foreach ($todayMoods as $mood) {
             $chartLabels[] = Carbon::parse($mood->created_at)->format('H:i');
             $chartValues[] = $mood->skor;
 
-            // Logika Warna dan Emoji berdasarkan skor
             if ($mood->skor >= 9) {
                 $emoji = '😆'; $color = '#4ade80';
             } elseif ($mood->skor >= 7) {

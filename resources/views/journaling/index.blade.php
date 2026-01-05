@@ -102,27 +102,29 @@
         <svg width="465" height="451" viewBox="0 0 465 451" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M173.341 55.4034C280.845 -17.2386 349.692 38.6888 370.677 75.7327C377.951 86.3454 378.766 106.005 378.264 114.508C373.177 137.154 371.215 184.798 404.057 194.209C436.899 203.619 452.167 224.017 455.696 233.039C479.777 278.686 446.174 306.601 426.363 314.852C419.293 317.797 375.708 312.264 378.944 387.081C382.18 461.898 319.973 482.405 288.465 483.306C274.503 481.367 241.325 486.258 220.315 521.332C199.304 556.407 168.846 543.712 156.243 532.981C126.785 498.173 102.856 493.009 94.5742 494.778C24.4756 518.994 -18.4087 493.235 -31.0885 477.328C-111.678 399.854 -75.6995 321.523 -30.1328 312.762C74.0227 292.736 103.598 241.068 105.367 217.737C105.06 124.196 150.555 70.5392 173.341 55.4034Z" fill="#72B940" fill-opacity="0.1" stroke="#396935"/>
         <path d="M-21.7526 419.117C-18.1195 549.724 67.4573 573.137 109.792 568.518C122.656 568.227 139.106 557.335 145.723 551.925C161.161 534.453 198.733 504.838 225.523 526.159C252.314 547.481 277.788 547.973 287.177 545.554C338.306 538.408 341.403 494.522 336.561 473.472C334.833 465.96 304.931 433.574 367.615 392.236C430.298 350.898 410.702 287.978 393.069 261.685C383.355 251.408 367.991 221.405 384.246 183.605C400.501 145.806 372.431 128.364 356.365 124.369C310.909 120.745 292.765 104.216 289.375 96.4041C268.194 24.8509 222.265 4.93004 201.948 3.91384C92.0171 -16.4331 49.3359 59.0354 68.7768 101.444C113.214 198.381 88.4675 252.939 70.5393 268.101C-5.6515 322.843 -22.7348 391.587 -21.7526 419.117Z" fill="#72B940" fill-opacity="0.1" stroke="#396935"/>
-        </svg>
+        <!-- </svg> -->
     </div>
 
     <div class="px-4 md:px-8 mt-6 mb-8">
-        <div class="flex flex-col md:flex-row justify-between items-end gap-4">
-            <div>
-                <h1 class="text-3xl md:text-4xl font-bold text-[#558B2F] mb-2 font-sans">Ruang Bercerita</h1>
-                <p class="text-[#396935] text-sm md:text-base max-w-xl font-light">Silahkan sampaikan semua keluh kesahmu disini, tidak perlu khawatir ZenMood siap mendengarkan kok.</p>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div class="max-w-2xl">
+                <h1 class="text-[#4A6B2F] text-4xl font-extrabold mb-2">Ruang Bercerita</h1>
+                <p class="text-gray-500 text-sm leading-relaxed">
+                    Silahkan sampaikan semua keluh kesahmu disini, tidak perlu khawatir ZenMood siap mendengarkan kok.
+                </p>
             </div>
-            <div class="flex items-center gap-3 text-[#558B2F] font-bold bg-white px-6 py-3 rounded-xl border-2 border-[#558B2F] shadow-sm mb-7">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+
+            <div class="flex items-center gap-2 bg-white border border-[#7FBC4E] text-[#7FBC4E] px-5 py-2.5 rounded-2xl shadow-sm self-end md:self-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
-                
-                <span class="text-base tracking-wide">
-                    {{ \Carbon\Carbon::now()->locale('id')->isoFormat('dddd, D MMMM Y') }}
+                <span class="text-sm font-bold">
+                    {{ \Carbon\Carbon::parse($date)->locale('id')->isoFormat('dddd, D MMMM Y') }}
                 </span>
             </div>
         </div>
     </div>
-
+<!--  -->
     <div class="px-4 md:px-8">
         
         <template x-if="journals.length === 0">

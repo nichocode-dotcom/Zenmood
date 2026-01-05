@@ -178,7 +178,20 @@ class MasterDataSeeder extends Seeder
                 'deskripsi_detail' => 'Seduh teh favoritmu tanpa gula.',
                 'poin_baterai' => 5,
                 'kategori' => 'Fisik'
-            ]
+            ],
+            [
+                'judul_aktivitas' => 'Tidur Siang Singkat', 
+                'deskripsi_detail' => 'Tidur siang selama 20 menit untuk menyegarkan pikiran.',
+                'poin_baterai' => 10,
+                'kategori' => 'Fisik'
+            ],
+            [
+                'judul_aktivitas' => 'Membaca Buku Inspiratif', 
+                'deskripsi_detail' => 'Luangkan waktu 15 menit untuk membaca buku yang menginspirasi.',
+                'poin_baterai' => 7,
+                'kategori' => 'Edukasi'
+            ],
+
 
         ]);
 

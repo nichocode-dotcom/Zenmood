@@ -47,8 +47,8 @@
             </div>
 
             @if($selectedDate != \Carbon\Carbon::now()->format('Y-m-d'))
-                <a href="{{ route('track-record') }}" 
-                class="group flex items-center gap-2 px-4 py-2 bg-white border border-[#7FBC4E] text-[#7FBC4E] text-sm font-medium rounded-full shadow-sm hover:bg-[#7FBC4E] hover:text-white transition-all duration-300 transform hover:-translate-y-0.5">
+                <a href="{{ route('track-record', ['date' => \Carbon\Carbon::now()->format('Y-m-d')]) }}"
+                    class="group flex items-center gap-2 px-4 py-2 bg-white border border-[#7FBC4E] text-[#7FBC4E] text-sm font-medium rounded-full shadow-sm hover:bg-[#7FBC4E] hover:text-white transition-all duration-300 transform hover:-translate-y-0.5">
                     
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -96,8 +96,6 @@
                     </div>
 
                 @else
-
-                    {{-- KONDISI 2: TIDAK ADA DATA (Tampilkan Pesan Kosong / Empty State) --}}
                     
                     <div class="w-full h-[350px] flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -126,9 +124,18 @@
                             <div class="max-w-[75%]">
                                 <span class="inline-block bg-[#7FBC4E] text-white text-xs px-3 py-1 rounded-full mb-2">Jurnal Harian</span>
                                 
+                                <h4 class="font-bold text-[#4A6B2F] mb-1">{{ $jurnal->judul ?? 'Jurnal Harian' }}</h4>
                                 <p class="text-sm text-gray-600">
-                                    {{ Str::limit($jurnal->isi, 100) }} 
-                                    <a href="#" class="underline text-[#4A6B2F]">Baca Selengkapnya</a>
+                                    {{ Str::limit($jurnal->isi_teks, 100) }} 
+                                    <button type="button" 
+                                        onclick="openJournalModal(
+                                            '{{ \Carbon\Carbon::parse($jurnal->created_at)->locale('id')->isoFormat('dddd, D MMMM Y') }}', 
+                                            '{{ addslashes($jurnal->judul) }}', 
+                                            {{ json_encode($jurnal->isi_teks) }} {{-- Menggunakan json_encode agar baris baru aman --}}
+                                        )"
+                                        class="underline text-[#4A6B2F] font-bold ml-1 cursor-pointer focus:outline-none">
+                                        Baca Selengkapnya
+                                    </button>
                                 </p>
                             </div>
                             <small class="text-gray-400 text-xs font-medium whitespace-nowrap ml-4">
@@ -245,6 +252,45 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
+    function openJournalModal(date, title, body) {
+        const modal = document.getElementById('journalModal');
+        const container = document.getElementById('modalContainer');
+        
+        // Isi Data
+        document.getElementById('modalDate').innerText = date;
+        document.getElementById('modalTitle').innerText = title || 'Jurnal Harian';
+        document.getElementById('modalBody').innerText = body;
+
+        // Tampilkan Modal dengan Animasi
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            container.classList.remove('scale-95', 'opacity-0');
+            container.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    function closeJournalModal() {
+        const modal = document.getElementById('journalModal');
+        const container = document.getElementById('modalContainer');
+
+        // Sembunyikan dengan Animasi
+        container.classList.remove('scale-100', 'opacity-100');
+        container.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    // Menutup modal jika klik di area hitam (luar modal)
+    window.onclick = function(event) {
+        const modal = document.getElementById('journalModal');
+        if (event.target == modal) {
+            closeJournalModal();
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         const ctx = document.getElementById('moodChart');
         if (ctx) {
@@ -257,35 +303,38 @@
                         data: @json($chartValues), 
                         backgroundColor: @json($chartColors), 
                         borderRadius: 10,
-                        barThickness: 30,
+                        barThickness: 40, // Paksa tebal batang agar terlihat
+                        minBarLength: 5,  // Batang tetap muncul sedikit meski skor rendah
                         borderSkipped: false,
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // Penting agar ngikutin tinggi style="350px"
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false },
                         tooltip: {
-                            callbacks: {
-                                title: function(context) {
-                                    return 'Jam: ' + context[0].label[1]; 
-                                }
-                            }
+                            enabled: true // Gunakan tooltip default agar lebih stabil
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 10,
-                            grid: { color: '#f3f4f6', borderDash: [5, 5] },
-                            ticks: { display: false },
-                            border: { display: false }
+                            min: 0,
+                            max: 10, // Memastikan skor 1-10 terlihat tinggi memenuhi canvas
+                            grid: {
+                                display: true,
+                                color: '#F3F4F6',
+                                borderDash: [5, 5]
+                            },
+                            ticks: {
+                                stepSize: 1, // Memunculkan garis bantu setiap kenaikan 1 skor
+                                display: false // Tetap sembunyikan angka di samping agar bersih
+                            }
                         },
                         x: {
                             grid: { display: false },
-                            border: { display: false },
-                            ticks: { font: { size: 14 } }
+                            ticks: { padding: 10 } // Memberi jarak antara batang dan jam agar tidak terlalu mepet
                         }
                     }
                 }
@@ -328,4 +377,35 @@
         }
     });
 </script>
+
+<div id="journalModal" class="fixed inset-0 z-[999] hidden flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-opacity duration-300">
+    
+    <div class="bg-white rounded-[32px] w-full max-w-2xl p-8 shadow-2xl relative transform transition-all duration-300 scale-95 opacity-0" id="modalContainer">
+        
+        <div class="flex justify-between items-start mb-6">
+            <div class="bg-white border border-[#7FBC4E] text-[#7FBC4E] px-4 py-1.5 rounded-full text-xs font-bold" id="modalDate">
+                </div>
+            <div class="flex gap-4">
+                <button onclick="closeJournalModal()" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <h2 class="text-[#4A6B2F] text-4xl font-extrabold mb-4" id="modalTitle">
+            </h2>
+        
+        <div class="flex text-yellow-400 mb-6 text-xl">
+            <i class="fas fa-star"></i> <i class="fas fa-star mx-1"></i> <i class="fas fa-star"></i>
+        </div>
+
+        <div class="border-t border-gray-100 pt-6">
+            <p class="text-gray-600 leading-relaxed text-lg" id="modalBody" style="white-space: pre-wrap; word-break: break-word;">
+                </p>
+        </div>
+    </div>
+</div>
+
 @endsection
