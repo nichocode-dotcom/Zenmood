@@ -238,8 +238,7 @@ function toggleHabit(habitId, isCompleted) {
         body: JSON.stringify({
             habit_id: habitId,
             status: isCompleted ? 0 : 1,
-            tanggal: '{{ $today }}',
-            user_id: {{ $userId }}
+            tanggal: '{{ $today }}'
         })
     })
     .then(response => response.json())
