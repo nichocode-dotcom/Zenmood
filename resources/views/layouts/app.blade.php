@@ -18,6 +18,15 @@
             }
         }
     </script>
+    <style>
+        html::-webkit-scrollbar, body::-webkit-scrollbar {
+            display: none; 
+        }
+        html, body {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
 </head>
 <body class="bg-[#F8F9FA] font-sans antialiased text-gray-800">
     <div class="container mx-auto px-4">
@@ -65,7 +74,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('track-record') }}" class="text-[#7FBC4E] font-bold text-[1.1rem] transition-colors duration-300 no-underline block py-2 md:py-0">
+                            <a href="#" class="text-[#7FBC4E] font-bold text-[1.1rem] transition-colors duration-300 no-underline block py-2 md:py-0">
                                 Track Record
                             </a>
                         </li>
