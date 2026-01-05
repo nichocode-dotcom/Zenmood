@@ -23,8 +23,13 @@
             display: none; 
         }
         html, body {
+<<<<<<< HEAD
             -ms-overflow-style: none;  
             scrollbar-width: none;  
+=======
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+>>>>>>> d0efdec684c168b2762c23411b1926416b5b64ec
         }
     </style>
 </head>
@@ -54,7 +59,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
+                            <a href="{{ route('mood-tracker') }}" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
                                 Mood Tracker
                             </a>
                         </li>
