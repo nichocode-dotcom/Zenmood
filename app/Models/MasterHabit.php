@@ -9,7 +9,7 @@ class MasterHabit extends Model
 {
     protected $table = 'master_habit';
     protected $primaryKey = 'id_habit';
-    protected $fillable = ['nama', 'target_harian'];
+    protected $fillable = ['nama', 'target_harian', 'icon'];
     public function transHabits()
     {
         return $this->hasMany(TransHabit::class, 'id_habit');

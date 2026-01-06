@@ -89,6 +89,7 @@ class HabitLogController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'target_harian' => 'required|string|max:255',
+            'icon' => 'required|string',
         ]);
 
         $sessionDate = session('selected_date', Carbon::now()->format('Y-m-d'));
@@ -96,6 +97,7 @@ class HabitLogController extends Controller
         $habit = MasterHabit::create([
             'nama' => $request->input('nama'),
             'target_harian' => $request->input('target_harian'),
+            'icon' => $request->input('icon'),
         ]);
 
         TransHabit::create([

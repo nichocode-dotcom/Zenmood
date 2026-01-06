@@ -301,7 +301,7 @@ class HealingPlanController extends Controller
             'Refleksi' => 'Vector.svg', 
             'Teknologi' => 'phone.svg', 
             'Edukasi' => 'ion_book.svg',
-            'Sosial' => 'group_users.svg',
+            'Sosial' => 'communication.svg',
             default => 'star.svg',
         };
     }

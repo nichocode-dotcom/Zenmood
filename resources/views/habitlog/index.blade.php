@@ -41,15 +41,32 @@
             @endphp
             <div class="bg-white border-2 border-[#558B2F] rounded-[24px] shadow-[2px_3px_10px_-3px_rgba(0,0,0,0.25)] p-4 md:p-6 flex items-center gap-4">
                 <div class="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#DAEDCD] flex items-center justify-center">
-                    @if($habit->nama == 'Minum Air 2L')
+    
+                    {{-- LOGIKA BARU: Cek kolom 'icon' dari database --}}
+                    
+                    @if($habit->icon == 'water' || $habit->nama == 'Minum Air 2L') 
+                        {{-- Icon Air --}}
                         <svg class="w-6 h-6 md:w-8 md:h-8 text-[#558B2F]" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0L12 2.69z"/>
                         </svg>
-                    @elseif($habit->nama == 'Meditasi')
+
+                    @elseif($habit->icon == 'star' || $habit->nama == 'Meditasi')
                         <svg class="w-6 h-6 md:w-8 md:h-8 text-[#558B2F]" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2L12 17l-6 4.8 2.4-7.2-6-4.8h7.6L12 2z"/>
-                            <path d="M8 14l1.5 4.5h4.5L12 16l-1.5 2.5H8z" opacity="0.7"/>
                         </svg>
+
+                    @elseif($habit->icon == 'running' || stripos($habit->nama, 'Joging') !== false || stripos($habit->nama, 'Lari') !== false)
+                        <svg class="w-6 h-6 md:w-8 md:h-8 text-[#558B2F]" fill="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="5" r="2"/>
+                            <path d="M9 8h2v8l-2-2v4h2v4H9v-4l2 2v-8H9V8z"/>
+                            <path d="M15 8h-2v8l2-2v4h-2v4h2v-4l-2 2v-8h2V8z"/>
+                        </svg>
+
+                    @elseif($habit->icon == 'apple' || stripos($habit->nama, 'Makan') !== false)
+                        <svg class="w-6 h-6 md:w-8 md:h-8 text-[#558B2F]" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.96-3.24-1.44-1.88-.78-3.28-1.36-4.12-1.74C6.62 17.04 6 16.8 6 16.08c0-1.36 1.08-2.23 2.14-3.17C8.89 12.55 9.89 11.89 10.18 10c.15-.95.23-2.12.23-3.51 0-2.12.23-3.89.69-5.3C11.32.99 11.7 1 12 1c.29 0 .68-.01 1.01.19.23.14.46.39.69.7.48.65.77 1.58.77 2.61 0 .75-.08 1.49-.23 2.21-.15.72-.34 1.4-.56 2.04.5.31 1.07.67 1.69 1.08 1.06.94 2.14 1.81 2.14 3.17 0 .72-.62.96-1.61 1.42-.84.38-2.24.96-4.12 1.74-1.16.48-2.15.94-3.24 1.44-1.03.48-2.1.55-3.08-.4-.27-.26-.49-.57-.66-.92-.58-1.19-.15-2.54 1.05-3.21.65-.36 1.44-.65 2.38-.87.94-.22 2.01-.4 3.2-.54 1.19-.14 2.45-.25 3.78-.33 1.33-.08 2.59-.13 3.78-.15 1.19-.02 2.26-.01 3.2.03.94.04 1.73.11 2.38.21.6.1 1.05.22 1.35.36.3.14.5.31.6.5.1.19.15.4.15.64 0 .24-.05.49-.15.75-.1.26-.24.52-.42.78z"/>
+                        </svg>
+
                     @elseif($habit->nama == 'Waktu Tidur')
                         <svg class="w-6 h-6 md:w-8 md:h-8 text-[#558B2F]" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M2 6h20v12H2z"/>
@@ -57,26 +74,15 @@
                             <circle cx="7" cy="11" r="1.5"/>
                             <path d="M18 10h-2v2h2v-2z"/>
                         </svg>
+
                     @elseif($habit->nama == 'Baca Buku')
+                        {{-- Icon Buku --}}
                         <svg class="w-6 h-6 md:w-8 md:h-8 text-[#558B2F]" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
                         </svg>
-                    @elseif($habit->nama == 'Joging Pagi')
-                        <svg class="w-6 h-6 md:w-8 md:h-8 text-[#558B2F]" fill="currentColor" viewBox="0 0 24 24">
-                            <circle cx="12" cy="5" r="2"/>
-                            <path d="M9 8h2v8l-2-2v4h2v4H9v-4l2 2v-8H9V8z"/>
-                            <path d="M15 8h-2v8l2-2v4h-2v4h2v-4l-2 2v-8h2V8z"/>
-                        </svg>
-                    @elseif($habit->nama == 'Makan Buah')
-                        <svg class="w-6 h-6 md:w-8 md:h-8 text-[#558B2F]" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.96-3.24-1.44-1.88-.78-3.28-1.36-4.12-1.74C6.62 17.04 6 16.8 6 16.08c0-1.36 1.08-2.23 2.14-3.17C8.89 12.55 9.89 11.89 10.18 10c.15-.95.23-2.12.23-3.51 0-2.12.23-3.89.69-5.3C11.32.99 11.7 1 12 1c.29 0 .68-.01 1.01.19.23.14.46.39.69.7.48.65.77 1.58.77 2.61 0 .75-.08 1.49-.23 2.21-.15.72-.34 1.4-.56 2.04.5.31 1.07.67 1.69 1.08 1.06.94 2.14 1.81 2.14 3.17 0 .72-.62.96-1.61 1.42-.84.38-2.24.96-4.12 1.74-1.16.48-2.15.94-3.24 1.44-1.03.48-2.1.55-3.08-.4-.27-.26-.49-.57-.66-.92-.58-1.19-.15-2.54 1.05-3.21.65-.36 1.44-.65 2.38-.87.94-.22 2.01-.4 3.2-.54 1.19-.14 2.45-.25 3.78-.33 1.33-.08 2.59-.13 3.78-.15 1.19-.02 2.26-.01 3.2.03.94.04 1.73.11 2.38.21.6.1 1.05.22 1.35.36.3.14.5.31.6.5.1.19.15.4.15.64 0 .24-.05.49-.15.75-.1.26-.24.52-.42.78z"/>
-                        </svg>
-                    @elseif($habit->nama == 'Makan Sayur')
-                        <svg class="w-6 h-6 md:w-8 md:h-8 text-[#558B2F]" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                            <path d="M9 12c0 .55.45 1 1 1s1-.45 1-1-.45-1-1-1-1 .45-1 1zm4 0c0 .55.45 1 1 1s1-.45 1-1-.45-1-1-1-1 .45-1 1z"/>
-                        </svg>
+
                     @else
+                        {{-- Default Icon (Plus/Kotak) --}}
                         <svg class="w-6 h-6 md:w-8 md:h-8 text-[#558B2F]" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                         </svg>
