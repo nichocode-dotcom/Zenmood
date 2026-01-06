@@ -12,7 +12,7 @@ class HabitLogController extends Controller
 {
     public function index()
     {
-        $userId = auth()->id();
+        $userId = Auth::id();
         $sessionDate = session('selected_date', Carbon::now()->format('Y-m-d'));
         $today = Carbon::parse($sessionDate);
 
@@ -62,7 +62,7 @@ class HabitLogController extends Controller
 
     public function toggle(Request $request)
     {
-        $userId = auth()->id();
+        $userId = Auth::id();
         $habitId = $request->input('habit_id');
         $status = $request->input('status');
         $tanggal = $request->input('tanggal');
@@ -86,31 +86,39 @@ class HabitLogController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'target_harian' => 'required|string|max:255',
-            'icon' => 'required|string',
-        ]);
+        try {
+            $request->validate([
+                'nama' => 'required|string|max:255',
+                'target_harian' => 'required|string|max:255',
+                'icon' => 'required|string',
+            ]);
 
-        $sessionDate = session('selected_date', Carbon::now()->format('Y-m-d'));
+            $userId = Auth::id();
+            $today = Carbon::today()->format('Y-m-d');
 
-        $habit = MasterHabit::create([
-            'nama' => $request->input('nama'),
-            'target_harian' => $request->input('target_harian'),
-            'icon' => $request->input('icon'),
-        ]);
+            $habit = MasterHabit::create([
+                'nama' => $request->input('nama'),
+                'target_harian' => $request->input('target_harian'),
+                'icon' => $request->input('icon'),
+            ]);
 
-        TransHabit::create([
-            'id_user' => auth()->user()->id_user, 
-            'id_habit' => $habit->id_habit,       
-            'tanggal' => $sessionDate,
-            'status' => 0 
-        ]);
+            TransHabit::create([
+                'id_user' => $userId, 
+                'id_habit' => $habit->id_habit,       
+                'tanggal' => $today,
+                'status' => 0 
+            ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Habit berhasil ditambahkan',
-            'habit' => $habit
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Habit berhasil ditambahkan',
+                'habit' => $habit
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menambahkan habit: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
