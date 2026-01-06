@@ -25,6 +25,8 @@
         html, body {
             -ms-overflow-style: none;  
             scrollbar-width: none;  
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
@@ -49,17 +51,17 @@
                 <div id="navbar-menu" class="hidden w-full lg:block lg:w-auto mt-4 lg:mt-0">
                     <ul class="flex flex-col items-center lg:flex-row lg:items-center gap-4 lg:gap-4 xl:gap-6 2xl:gap-8 list-none ml-9 mt-0 mb-0 p-0 lg:pr-6 xl:pr-10">
                         <li>
-                            <a href="#" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
+                            <a href="{{ route('dashboard') }}" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
                                 Dashboard
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
+                            <a href="{{ route('mood-tracker') }}" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
                                 Mood Tracker
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('journaling.index') }}" class="text-[#7FBC4E] font-bold text-[1.1rem] transition-colors duration-300 no-underline block py-2 md:py-0">
+                            <a href="{{ route('journaling.index') }}" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
                                 Journaling
                             </a>
                         </li>
@@ -69,12 +71,12 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
+                            <a href="{{ route('healing-plan') }}" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
                                 Healing Plan
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('track-record') }}" class="text-[#7FBC4E] font-bold text-[1.1rem] transition-colors duration-300 no-underline block py-2 md:py-0">
+                            <a href="{{ route('track-record') }}" class="text-[#4A6B2F] hover:text-[#7FBC4E] font-bold text-base lg:text-[0.85rem] xl:text-[1.05rem] transition-colors duration-300 no-underline block py-2 lg:py-0">
                                 Track Record
                             </a>
                         </li>

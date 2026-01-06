@@ -24,6 +24,7 @@ class CreateMoodTable extends Migration
             $table->time('jam');
             $table->string('kategori_aktivitas'); 
             $table->string('faktor_sistem')->nullable(); 
+            $table->integer('skor')->nullable();
             
             $table->text('faktor_note')->nullable(); 
             $table->text('hal_disyukuri')->nullable(); 

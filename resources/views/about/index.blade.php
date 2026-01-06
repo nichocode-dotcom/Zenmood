@@ -377,7 +377,6 @@
                                 </svg>
                             </div>
 
-                            <!-- Figma Logo -->
                             <div class="w-20 md:w-24 lg:w-28 flex-shrink-0">
                                 <svg viewBox="0 0 107 118" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -398,7 +397,6 @@
                                 </svg>
                             </div>
 
-                            <!-- GitHub Logo -->
                             <div class="w-20 md:w-24 lg:w-28 flex-shrink-0">
                                 <svg viewBox="0 0 122 120" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">

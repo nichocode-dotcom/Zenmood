@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Journal;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class JournalController extends Controller
 {
     public function index()
     {
-        $dbJournals = Journal::where('id_user', 1)
+        $date = session('selected_date', Carbon::now()->format('Y-m-d'));
+        // UBAH: dari where('id_user', 1) menjadi auth()->id()
+        $dbJournals = Journal::where('id_user', auth()->id())
+            ->whereDate('tanggal', $date)
             ->latest('created_at')
             ->get();
 
@@ -25,7 +29,7 @@ class JournalController extends Controller
             ];
         });
 
-        return view('journaling.index', compact('journals'));
+        return view('journaling.index', compact('journals', 'date'));
     }
 
     public function store(Request $request)
@@ -34,18 +38,26 @@ class JournalController extends Controller
             'title' => 'required|max:255',
             'content' => 'required',
             'rating' => 'required|integer|min:1|max:5',
+            'id' => 'nullable|integer',
         ]);
 
-        $skor = $this->analisisSentimen($request->content);
+        $skor = $this->analisisSentimen($request->input('content'));
 
-        $journal = Journal::create([
-            'id_user' => 1, 
-            'tanggal' => now(),
-            'judul' => $request->title,
-            'isi_teks' => $request->content,
-            'skor_analisis' => $skor,
-            'rating_user' => $request->rating,
-        ]);
+        $date = session('selected_date', Carbon::now()->format('Y-m-d'));
+
+        $journal = Journal::updateOrCreate(
+            [
+                'id_jurnal' => $request->input('id') // Pastikan form Anda mengirim 'id'
+            ],
+            [
+                'id_user' => auth()->id(), 
+                'tanggal' => $date,
+                'judul' => $request->title,
+                'isi_teks' => $request->input('content'),
+                'skor_analisis' => $skor,
+                'rating_user' => $request->rating,
+            ]
+        );
         
         $responseData = [
             'id' => $journal->id_jurnal,

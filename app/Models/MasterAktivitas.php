@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MasterHealingPlan extends Model
+class MasterAktivitas extends Model
 {
     protected $table = 'master_healing_plan';
     protected $primaryKey = 'id_healing';
