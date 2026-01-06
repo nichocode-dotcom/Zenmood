@@ -11,21 +11,16 @@ class MoodSeeder extends Seeder
 {
     public function run()
     {
-        // 1. Ambil User Pertama
         $user = User::first();
         
-        // Cek jika user tidak ada
         if (!$user) {
             $this->command->error("Tabel User kosong! Jalankan UserSeeder terlebih dahulu.");
             return;
         }
 
-        $userId = $user->id_user; // Pastikan model User primaryKey = 'id_user'
-        $today = Carbon::now()->format('Y-m-d'); // Tanggal Hari Ini
+        $userId = $user->id_user; 
+        $today = Carbon::now()->format('Y-m-d'); 
 
-        // ==========================================
-        // DATA 1: PAGI (Semangat)
-        // ==========================================
         Mood::create([
             'id_user' => $userId,
             'id_emosi' => 1,
@@ -43,13 +38,10 @@ class MoodSeeder extends Seeder
             'created_at' => Carbon::now()->setTime(7, 0, 0)
         ]);
 
-        // ==========================================
-        // DATA 2: SIANG (Biasa/Sibuk)
-        // ==========================================
         Mood::create([
             'id_user' => $userId,
-            'id_emosi' => 3, // Pastikan ID 3 ada di tabel 'emosi' (misal: Netral)
-            'id_aktivitas' => 2, // Pastikan ID 2 ada di tabel 'master_aktivitas' (misal: Bekerja/Kuliah)
+            'id_emosi' => 3, 
+            'id_aktivitas' => 2, 
             
             'tanggal' => $today,
             'jam' => '12:30:00',
@@ -63,13 +55,10 @@ class MoodSeeder extends Seeder
             'created_at' => Carbon::now()->setTime(12, 30, 0)
         ]);
 
-        // ==========================================
-        // DATA 3: SORE (Lelah/Cemas)
-        // ==========================================
         Mood::create([
             'id_user' => $userId,
-            'id_emosi' => 4, // Pastikan ID 4 ada di tabel 'emosi' (misal: Cemas/Sedih)
-            'id_aktivitas' => 2, // ID Aktivitas (misal: Bekerja/Kuliah)
+            'id_emosi' => 4, 
+            'id_aktivitas' => 2, 
             
             'tanggal' => $today,
             'jam' => '16:00:00',
@@ -83,13 +72,10 @@ class MoodSeeder extends Seeder
             'created_at' => Carbon::now()->setTime(16, 0, 0)
         ]);
 
-        // ==========================================
-        // DATA 4: MALAM (Rileks)
-        // ==========================================
         Mood::create([
             'id_user' => $userId,
-            'id_emosi' => 2, // Pastikan ID 2 ada di tabel 'emosi' (misal: Tenang)
-            'id_aktivitas' => 3, // Pastikan ID 3 ada di tabel 'master_aktivitas' (misal: Istirahat/Hobi)
+            'id_emosi' => 2, 
+            'id_aktivitas' => 3, 
             
             'tanggal' => $today,
             'jam' => '20:00:00',

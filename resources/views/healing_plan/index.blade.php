@@ -137,55 +137,41 @@
 </div>
 
 <script>
-    // 1. Setup Data dari Server
     const activitiesDB = @json($activitiesDB);
     const serverEnergy = {{ $energyPercentage }}; 
     const viewedDateRaw = "{{ session('selected_date', date('Y-m-d')) }}";
     const userId = "{{ Auth::id() }}";
 
-    // KUNCI PENYIMPANAN UNIK (User + Tanggal)
-    // Ini rahasianya agar data tidak "nyangkut" saat pindah tanggal
     const STORAGE_KEY = `zenmood_progress_${userId}_${viewedDateRaw}`;
 
     let activityStates = {};
 
     function initChecklistSystem() {
-        // A. Coba ambil data progress tersimpan di browser (jika ada)
         let savedStates = {};
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
             if (raw) savedStates = JSON.parse(raw);
         } catch (e) { console.error("Gagal load storage", e); }
 
-        // B. Gabungkan Data Server + Data Browser
         for (const [title, data] of Object.entries(activitiesDB)) {
-            // Parse steps
             let steps = [];
             try { steps = typeof data.steps === 'string' ? JSON.parse(data.steps) : data.steps; } 
             catch(e) { steps = ['Mulai', 'Selesai']; }
             const totalSteps = steps.length > 0 ? steps.length : 1;
-
-            // LOGIKA GABUNGAN:
-            // 1. Jika di DB sudah "Selesai" (100%), kita paksa centang semua (Server Authority).
-            // 2. Jika belum, kita cek apakah browser punya ingatan checkbox (Client Memory).
-            // 3. Jika tidak ada ingatan, biarkan kosong.
             
             if (data.is_completed == 1) {
                 activityStates[title] = new Array(totalSteps).fill(true);
             } else if (savedStates[title] && savedStates[title].length === totalSteps) {
-                // Restore checkbox yang dicentang user sebelumnya
                 activityStates[title] = savedStates[title];
             } else {
                 activityStates[title] = new Array(totalSteps).fill(false);
             }
         }
 
-        // Render tampilan
         if (document.getElementById('active-container')) {
             renderActiveSection(); 
         }
         
-        // Update energi visual (Hitung ulang berdasarkan checkbox yang direstore)
         updateGlobalEnergy();
     }
 
@@ -203,16 +189,11 @@
         for (const [title, data] of Object.entries(activitiesDB)) {
             
             if (data.is_active) {
-                // Hitung progress saat ini
                 const currentStates = activityStates[title] || [];
                 const total = currentStates.length > 0 ? currentStates.length : 1; 
                 const checkedCount = currentStates.filter(Boolean).length;
                 const percent = Math.round((checkedCount/total)*100);
 
-                // SYARAT TAMPIL:
-                // 1. Pilihan Manual (Alternatif): Selalu tampil.
-                // 2. Rekomendasi Utama: Tampil jika sudah ada progress (checkedCount > 0) ATAU sudah selesai.
-                
                 const isManualSelection = (data.is_utama == 0);
                 const isStartedRecommendation = (data.is_utama == 1 && checkedCount > 0);
 
@@ -267,7 +248,6 @@
         const isUtama = element.getAttribute('data-is-utama');
 
         let steps = activitiesDB[title] ? activitiesDB[title].steps : ['Lakukan aktivitas', 'Selesai'];
-        // Normalisasi format steps jika masih string JSON
         if (typeof steps === 'string') {
              try { steps = JSON.parse(steps); } catch(e) { steps = ['Lakukan aktivitas', 'Selesai']; }
         }
@@ -282,7 +262,6 @@
         document.getElementById('modal-desc').innerText = desc;
         document.getElementById('modal-icon-img').src = iconSrc;
         
-        // Init state jika null
         if (!activityStates[title]) {
              const isComplete = activitiesDB[title] ? activitiesDB[title].is_completed == 1 : false;
              activityStates[title] = new Array(steps.length).fill(isComplete);
@@ -318,40 +297,30 @@
         
         if(!activityStates[title]) return;
 
-        // 1. Update State di Memori
         activityStates[title][index] = checkbox.checked;
         
-        // 2. SIMPAN KE BROWSER (PENTING!)
         saveToLocalStorage();
 
-        // 3. Update Visual Modal & List Aktif
         calculateVisual(title);
         
-        // Hitung persen untuk DB
         const currentStates = activityStates[title];
         const checkedCount = currentStates.filter(Boolean).length;
         const percent = Math.round((checkedCount / currentStates.length) * 100);
         const status = percent === 100 ? 1 : 0;
         
-        // Update objek lokal agar UI responsif
         if(activitiesDB[title]) {
             activitiesDB[title].is_completed = status;
             activitiesDB[title].is_active = true; 
         }
 
-        // Render ulang "Pilihan Aktif" di belakang modal
-        // Karena checkedCount > 0, sekarang item ini akan muncul (tidak hilang)
         if (document.getElementById('active-container')) renderActiveSection();
         
-        // Update Energi Bar
         updateGlobalEnergy();
 
-        // 4. Simpan ke Server (Hanya status 0/1)
         saveToDatabase(idHealing, status, isUtama);
     }
 
     function saveToLocalStorage() {
-        // Simpan seluruh state ke kunci unik tanggal ini
         localStorage.setItem(STORAGE_KEY, JSON.stringify(activityStates));
     }
 
@@ -376,9 +345,6 @@
                 const totalSteps = states.length;
                 const maxPoints = parseInt(data.poin) || 0;
                 
-                // Opsional: Hitung energi secara proporsional jika ingin terlihat naik sedikit-sedikit
-                // Atau tetap 'All or Nothing' (hanya jika full selesai)
-                // Di sini saya buat proporsional agar user senang melihat barnya bergerak
                 if (totalSteps > 0) {
                     totalPoints += (checkedSteps / totalSteps) * maxPoints;
                 }
@@ -418,36 +384,27 @@
 @endsection
 
 <!-- <script>
-    // 1. Ambil Data Valid dari Server
     const activitiesDB = @json($activitiesDB);
     const serverEnergy = {{ $energyPercentage }}; // Energi awal dari DB
     
-    // State checkbox hanya untuk sesi aktif ini (reset saat refresh/pindah tanggal)
     let activityStates = {};
 
     function initChecklistSystem() {
-        // Hapus semua logika Local Storage yang bikin bentrok!
-        // Kita inisialisasi state murni dari data Database yang dikirim Controller
         
         for (const [title, data] of Object.entries(activitiesDB)) {
-            // Tentukan jumlah langkah
             let steps = [];
             try { steps = typeof data.steps === 'string' ? JSON.parse(data.steps) : data.steps; } catch(e) { steps = ['Mulai', 'Selesai']; }
             const totalSteps = steps.length > 0 ? steps.length : 1;
 
-            // Jika status di DB 'is_completed' == 1, maka checkbox dicentang semua
-            // Jika 0, maka kosong semua. (Sederhana & Konsisten)
             const isDone = data.is_completed == 1; 
             
             activityStates[title] = new Array(totalSteps).fill(isDone);
         }
 
-        // Render ulang tampilan aktif
         if (document.getElementById('active-container')) {
             renderActiveSection(); 
         }
         
-        // Update visual energi sesuai data awal DB
         updateEnergyVisual(serverEnergy);
     }
 
@@ -462,21 +419,14 @@
         activeContainer.innerHTML = ''; 
         let hasActiveActivities = false;
 
-        // Loop data dari DB Server
         for (const [title, data] of Object.entries(activitiesDB)) {
             
             if (data.is_active) {
-                // --- LOGIKA FILTER TAMPILAN (CORE PERBAIKAN) ---
-                
-                // 1. Hitung dulu progress-nya
+
                 const currentStates = activityStates[title] || [];
                 const total = currentStates.length > 0 ? currentStates.length : 1; 
                 const checkedCount = currentStates.filter(Boolean).length;
                 const percent = Math.round((checkedCount/total)*100);
-
-                // 2. Tentukan syarat "Boleh Tampil di Atas":
-                //    A. Jika ini Pilihan Manual (Alternatif / is_utama=0): SELALU TAMPIL (karena user sudah klik 'Pilih')
-                //    B. Jika ini Rekomendasi Sistem (is_utama=1): HANYA TAMPIL JIKA sudah ada progress (checkedCount > 0)
                 
                 const isManualSelection = (data.is_utama == 0);
                 const isStartedRecommendation = (data.is_utama == 1 && checkedCount > 0);
@@ -517,7 +467,6 @@
             }
         }
         
-        // Toggle visibility section
         if (hasActiveActivities) {
             activeSection.classList.remove('hidden');
         } else {
@@ -533,7 +482,6 @@
         const poin = element.getAttribute('data-poin');
         const isUtama = element.getAttribute('data-is-utama');
 
-        // Ambil steps dari variable global activitiesDB (lebih aman daripada atribut HTML)
         let steps = activitiesDB[title] ? activitiesDB[title].steps : ['Lakukan aktivitas', 'Selesai'];
         if (!Array.isArray(steps)) steps = ['Lakukan aktivitas', 'Selesai'];
 
@@ -546,7 +494,6 @@
         document.getElementById('modal-desc').innerText = desc;
         document.getElementById('modal-icon-img').src = iconSrc;
         
-        // Inisialisasi state jika belum ada (fallback)
         if (!activityStates[title]) {
              const isComplete = activitiesDB[title] ? activitiesDB[title].is_completed == 1 : false;
              activityStates[title] = new Array(steps.length).fill(isComplete);
@@ -586,14 +533,12 @@
         
         calculateVisual(title);
         
-        // Cek apakah 100% selesai?
         const currentStates = activityStates[title];
         const checkedCount = currentStates.filter(Boolean).length;
         const percent = Math.round((checkedCount / currentStates.length) * 100);
         
         const status = percent === 100 ? 1 : 0;
         
-        // Update data lokal biar sinkron
         if(activitiesDB[title]) {
             activitiesDB[title].is_completed = status;
             activitiesDB[title].is_active = true; 
@@ -601,7 +546,6 @@
 
         if (document.getElementById('active-container')) renderActiveSection();
 
-        // SIMPAN KE DB & UPDATE ENERGI DARI SERVER RESPONSE
         saveToDatabase(idHealing, status, isUtama);
     }
 
@@ -618,7 +562,6 @@
     }
 
     function updateEnergyVisual(newValue) {
-        // Fungsi khusus update UI energi
         const bar = document.getElementById('main-energy-bar');
         const icon = document.getElementById('main-energy-icon');
         const textInner = document.getElementById('main-energy-text-inner');
@@ -642,8 +585,6 @@
         .then(response => response.json())
         .then(data => {
             if(data.success) {
-                // UPDATE ENERGI LANGSUNG DARI RESPON SERVER (AKURAT!)
-                // Server sudah hitung ulang total energi berdasarkan tanggal yang aktif di session
                 updateEnergyVisual(data.new_energy);
             }
         })

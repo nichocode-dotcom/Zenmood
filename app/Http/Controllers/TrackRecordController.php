@@ -77,16 +77,13 @@ class TrackRecordController extends Controller
             $habitAnalysis = "Tampaknya belum ada habit yang selesai. Tidak apa-apa, pilih satu habit termudah dan kerjakan sekarang juga.";
         }
 
-        // --- PERBAIKAN HEALING PLAN ---
-        // Ambil semua rencana yang tercatat pada tanggal $today
         $allHealing = TransHealingPlan::where('id_user', $user->id_user)
-                                        ->where('tanggal', $today) // Ganti 'created_at' jadi 'tanggal'
-                                        ->with('masterHealing') // Pastikan ini sesuai nama fungsi di Model TransHealingPlan
+                                        ->where('tanggal', $today) 
+                                        ->with('masterHealing') 
                                         ->get();
 
         $totalHealing = $allHealing->count();
         
-        // Ganti 'status' jadi 'is_completed' sesuai struktur database Healing Plan
         $doneHealing = $allHealing->where('is_completed', 1)->count(); 
         
         $healingPercentage = $totalHealing > 0 ? round(($doneHealing / $totalHealing) * 100) : 0;
@@ -191,11 +188,9 @@ class TrackRecordController extends Controller
     {
         $user = Auth::user();
         
-        // 1. Ambil Tanggal
         $selectedDate = $request->input('date', session('selected_date', Carbon::now()->format('Y-m-d')));
         $today = $selectedDate;
 
-        // 2. Data Mood & Insight
         $todayMood = Mood::where('id_user', $user->id_user)
                         ->whereDate('created_at', $today)
                         ->orderBy('created_at', 'desc')
@@ -208,13 +203,11 @@ class TrackRecordController extends Controller
             else $insightMessage = "Hari yang berat? Tidak apa-apa untuk istirahat.";
         }
 
-        // 3. Jurnal
         $journals = TransJurnal::where('id_user', $user->id_user)
                                 ->whereDate('created_at', $today)
                                 ->latest()
                                 ->get();
         
-        // 4. Habit Log (Filter Tanggal Benar)
         $allHabits = TransHabit::where('id_user', $user->id_user)
                                 ->where('tanggal', $today)
                                 ->with('habit')
@@ -222,7 +215,6 @@ class TrackRecordController extends Controller
                                 
         $habitPercentage = $allHabits->count() > 0 ? round(($allHabits->where('status', 1)->count() / $allHabits->count()) * 100) : 0;
 
-        // 5. Healing Plan (Filter Tanggal Benar)
         $allHealing = TransHealingPlan::where('id_user', $user->id_user)
                                       ->where('tanggal', $today)
                                       ->with('masterHealing')
@@ -230,12 +222,10 @@ class TrackRecordController extends Controller
                                       
         $healingPercentage = $allHealing->count() > 0 ? round(($allHealing->where('is_completed', 1)->count() / $allHealing->count()) * 100) : 0;
 
-        // 6. Chart Data (Logic Grafik yang Hilang)
         $todaysMoods = Mood::where('id_user', $user->id_user)
                            ->whereDate('created_at', $today)
                            ->orderBy('created_at', 'asc')->get();
 
-        // --- INI BAGIAN YANG SEBELUMNYA HILANG ---
         $chartLabels = [];
         $chartValues = [];
         
@@ -245,7 +235,6 @@ class TrackRecordController extends Controller
             $chartValues[] = $mood->skor;
         }
 
-        // Konfigurasi QuickChart (API Grafik untuk PDF)
         $chartConfig = [
             'type' => 'bar',
             'data' => [
@@ -267,7 +256,6 @@ class TrackRecordController extends Controller
             ]
         ];
         
-        // Generate URL Grafik
         $chartUrl = 'https://quickchart.io/chart?c=' . urlencode(json_encode($chartConfig));
 
         $avgMoodScore = $todaysMoods->avg('skor');
@@ -295,7 +283,7 @@ class TrackRecordController extends Controller
         $pdf = PDF::loadView('track_record.pdf', compact(
             'user', 'selectedDate', 'insightMessage', 'journals', 
             'allHabits', 'habitPercentage', 'allHealing', 'healingPercentage', 
-            'chartUrl', // Variabel ini sekarang SUDAH ADA
+            'chartUrl', 
             'moodAnalysisText',      
             'moodRecommendationText', 
             'moodDetailText'          

@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash; // Lebih disarankan untuk Laravel modern
-use Carbon\Carbon; // WAJIB ADA agar Carbon::now() berfungsi
+use Illuminate\Support\Facades\Hash; 
+use Carbon\Carbon; 
 
 class MasterDataSeeder extends Seeder
 {
@@ -23,7 +23,6 @@ class MasterDataSeeder extends Seeder
      */
     public function run()
     {
-       // 1. MASTER EMOSI
         DB::table('emosi')->insert([
             ['nama' => 'Sangat Bahagia', 'ikon' => '🤩', 'skor' => 5],
             ['nama' => 'Senang', 'ikon' => '🙂', 'skor' => 3],
@@ -33,9 +32,6 @@ class MasterDataSeeder extends Seeder
             ['nama' => 'Marah', 'ikon' => '😡', 'skor' => -4],
         ]);
 
-        // 2. MASTER AKTIVITAS (Mood Tracker)
-        // Note: Gunakan 'kategori' jika di migration kamu string, 
-        // gunakan 'id_kategori' jika kamu pakai tabel relasi.
         DB::table('master_aktivitas')->insert([
             ['nama_aktivitas' => 'Tidur Cukup', 'id_kategori' => 1, 'label' => 'Fisik'],
             ['nama_aktivitas' => 'Tugas Kuliah', 'id_kategori' => 2, 'label' => 'Kerja'],
@@ -51,7 +47,6 @@ class MasterDataSeeder extends Seeder
             ['nama_aktivitas' => 'Mengobrol dengan Keluarga', 'id_kategori' => 4, 'label' => 'Sosial'],
         ]);
 
-        // 3. MASTER HABIT
         DB::table('master_habit')->insert([
             ['nama' => 'Minum Air 2L', 'target_harian' => '2 Liter'],
             ['nama' => 'Meditasi', 'target_harian' => '10 Menit'],
@@ -65,7 +60,6 @@ class MasterDataSeeder extends Seeder
             ['nama' => 'Skincare', 'target_harian' => 'Malam'],
         ]);
 
-        // 4. MASTER TEMPLATE JURNAL
         $templates = [
             ['pertanyaan' => 'Apa yang kamu syukuri hari ini?'],
             ['pertanyaan' => 'Apa hal berat yang berhasil kamu lewati?'],
@@ -86,9 +80,7 @@ class MasterDataSeeder extends Seeder
         ];
         DB::table('master_template')->insert($templates);
 
-        // 5. MASTER QUOTES
         DB::table('master_quote')->insert([
-        // --- Kategori: SUPPORT ---
             ['isi' => 'Tidak apa-apa untuk istirahat sejenak. Dunia bisa menunggu.', 'penulis' => 'ZenMood', 'kategori' => 'support'],
             ['isi' => 'Menangis itu valid. Keluarkan saja.', 'penulis' => 'ZenMood', 'kategori' => 'support'],
             ['isi' => 'Kamu lebih kuat dari yang kamu kira, tapi sekarang waktunya pulih.', 'penulis' => 'ZenMood', 'kategori' => 'support'],
@@ -101,7 +93,6 @@ class MasterDataSeeder extends Seeder
             ['isi' => 'Diam juga bentuk bertahan hidup.', 'penulis' => 'ZenMood', 'kategori' => 'support'],
             ['isi' => 'Hari ini kamu boleh nggak punya jawaban.', 'penulis' => 'ZenMood', 'kategori' => 'support'],
 
-            // --- Kategori: MOTIVASI ---
             ['isi' => 'Satu langkah kecil tetaplah langkah maju.', 'penulis' => 'Serinity', 'kategori' => 'motivasi'],
             ['isi' => 'Fokus pada apa yang bisa kamu kendalikan.', 'penulis' => 'Serinity', 'kategori' => 'motivasi'],
             ['isi' => 'Kesulitan hari ini adalah kekuatan di masa depan.', 'penulis' => 'Serinity', 'kategori' => 'motivasi'],
@@ -114,7 +105,6 @@ class MasterDataSeeder extends Seeder
             ['isi' => 'Hari ini mungkin biasa, tapi kamu tetap hadir.', 'penulis' => 'Serinity', 'kategori' => 'motivasi'],
             ['isi' => 'Kamu belajar, bahkan saat merasa tersesat.', 'penulis' => 'Serinity', 'kategori' => 'motivasi'],
 
-            // --- Kategori: APRESIASI ---
             ['isi' => 'Pertahankan energimu, kamu melakukan hal hebat!', 'penulis' => 'Stain', 'kategori' => 'apresiasi'],
             ['isi' => 'Jangan lupa berbagi senyum hari ini.', 'penulis' => 'Stain', 'kategori' => 'apresiasi'],
             ['isi' => 'Nikmati momen ini, kamu pantas mendapatkannya.', 'penulis' => 'Stain', 'kategori' => 'apresiasi'],
@@ -128,7 +118,6 @@ class MasterDataSeeder extends Seeder
             ['isi' => 'Hari ini kamu selaras dengan dirimu sendiri.', 'penulis' => 'Stain', 'kategori' => 'apresiasi'],
         ]);
 
-        // 6. MASTER HEALING PLAN (Sesuai Migration kamu yang kompleks)
         DB::table('master_healing_plan')->insert([
             [
                 'judul_aktivitas' => 'Teknik Grounding 5-4-3-2-1', 
@@ -211,7 +200,6 @@ class MasterDataSeeder extends Seeder
                 'kategori' => 'Refleksi'
             ],
             
-                // ... (Data sebelumnya) ...
 
             [
                 'judul_aktivitas' => 'Yoga Pemula 15 Menit', 
@@ -290,7 +278,6 @@ class MasterDataSeeder extends Seeder
 
         ]);
 
-        // 7. USER AWAL
         DB::table('users')->insert([
             [
                 'id_user' => 1,

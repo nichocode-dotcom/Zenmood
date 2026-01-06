@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB; // PERLU DITAMBAHKAN untuk fitur Quote
+use Illuminate\Support\Facades\DB; 
 use Carbon\Carbon;
 use App\Models\Mood;
 use App\Models\TransHabit;
@@ -19,15 +19,9 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         
-        // 1. SINKRONISASI TANGGAL
         $todayStr = session('selected_date', Carbon::now('Asia/Jakarta')->format('Y-m-d'));
         $today = Carbon::parse($todayStr);
 
-        // ============================================================
-        // LOGIKA BATERAI MENTAL (KODE ASLI KAMU - TIDAK DIUBAH)
-        // ============================================================
-
-        // --- 1. MOOD TRACKER ---
         $todayMoods = Mood::where('id_user', $user->id_user)
             ->whereDate('tanggal', $todayStr)
             ->orderBy('jam', 'asc')
@@ -39,7 +33,6 @@ class DashboardController extends Controller
             $scoreMood = (($rawAvgMood - 1) / 9 * 10) - 5;
         }
 
-        // --- 2. JOURNALING ---
         $todayJournals = Journal::where('id_user', $user->id_user)
             ->whereDate('tanggal', $todayStr)
             ->get();
@@ -64,7 +57,6 @@ class DashboardController extends Controller
             $scoreJournal = $totalSkorJurnal / $todayJournals->count();
         }
 
-        // --- 3. HABIT LOG ---
         $allHabits = TransHabit::where('id_user', $user->id_user)
             ->whereDate('tanggal', $todayStr)
             ->get();
@@ -81,7 +73,6 @@ class DashboardController extends Controller
             $scoreHabit = ($ratio * 10) - 5;
         }
 
-        // --- 4. HEALING PLAN ---
         $healingPlans = TransHealingPlan::where('id_user', $user->id_user)
             ->whereDate('tanggal', $todayStr)
             ->get();
@@ -102,7 +93,6 @@ class DashboardController extends Controller
             $scoreHealing = ($ratioHealing * 10) - 5;
         }
 
-        // --- HITUNG TOTAL BATERAI ---
         $components = [];
         if (!is_null($scoreMood)) $components[] = $scoreMood;
         if (!is_null($scoreJournal)) $components[] = $scoreJournal;
@@ -117,14 +107,10 @@ class DashboardController extends Controller
             $mentalConditionPercent = (int) max(0, min(100, round($baterai)));
         }
 
-        // Update ke Database User
         User::where('id_user', $user->id_user)->update([
             'battery_percentage' => $mentalConditionPercent
         ]);
 
-        // ==========================================
-        // DATA LAIN UNTUK TAMPILAN VIEW
-        // ==========================================
         
         $chartLabels = []; $chartValues = []; $chartEmojis = []; $chartColors = [];
 
@@ -149,11 +135,6 @@ class DashboardController extends Controller
             ->take(4)
             ->get();
 
-        // ============================================================
-        // FITUR BARU: QUOTE DINAMIS (Ditambahkan di sini)
-        // ============================================================
-        
-        // Menggunakan variabel $mentalConditionPercent hasil hitungan kamu
         if ($mentalConditionPercent <= 30) {
             $targetKategori = 'support';
         } elseif ($mentalConditionPercent <= 70) {
@@ -162,13 +143,11 @@ class DashboardController extends Controller
             $targetKategori = 'motivasi'; 
         }
 
-        // Ambil dari DB
         $quoteData = DB::table('master_quote')
             ->where('kategori', $targetKategori)
             ->inRandomOrder()
             ->first();
 
-        // Cek jika kosong
         if (!$quoteData) {
             $quoteContent = "Diam juga bentuk bertahan hidup.";
             $quoteAuthor = "ZenMood";
@@ -179,22 +158,16 @@ class DashboardController extends Controller
 
         $pendingPlans = TransHealingPlan::where('id_user', $user->id_user)
             ->whereDate('tanggal', $todayStr)
-            ->where('is_completed', 0) // HANYA YANG BELUM SELESAI
+            ->where('is_completed', 0) 
             ->get()
             ->map(function($plan) {
-                // Mapping data biar rapi pas dikirim ke JS
-                // Kalo datanya ada di relasi, pake $plan->master->judul, dst.
                 return [
-                    'id'        => $plan->id, // atau id_trans_healing
+                    'id'        => $plan->id, 
                     'judul'     => $plan->judul ?? $plan->nama_aktivitas ?? 'Aktivitas', 
                     'kategori'  => $plan->kategori ?? 'Self Care',
                     'deskripsi' => $plan->deskripsi ?? 'Lakukan aktivitas ini untuk menaikkan mood.',
                 ];
             });
-
-        // ============================================================
-        // PERBAIKAN RETURN VIEW (Mengganti compact dengan array)
-        // ============================================================
         
         return view('dashboard.index', [
             'user'                   => $user,
@@ -208,8 +181,7 @@ class DashboardController extends Controller
             'doneHabit'              => $doneHabit,
             'totalHabit'             => $totalHabit,
             
-            // Variabel untuk Quote
-            'battery' => $mentalConditionPercent, // Mapping agar sesuai view
+            'battery' => $mentalConditionPercent, 
             'quote'   => $quoteContent,
             'author'  => $quoteAuthor,
             'pendingPlans' => $pendingPlans,

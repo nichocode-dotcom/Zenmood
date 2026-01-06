@@ -40,7 +40,6 @@
         
         .header-container { padding: 30px 40px; }
         
-        /* Layout Tabel Kolom 2 */
         .table-grid { width: 100%; border-collapse: separate; border-spacing: 15px 0; margin-left: -15px; }
         .table-grid td { vertical-align: top; width: 50%; } /* Paksa 50% agar seimbang */
 
@@ -135,11 +134,9 @@
 
                         @forelse($allHealing as $plan)
                             <div class="list-item text-gray-500">
-                                {{-- FIX: status -> is_completed --}}
                                 <span class="check-symbol {{ $plan->is_completed ? 'text-zen' : 'text-gray-400' }}">
                                     {{ $plan->is_completed ? '✔' : '○' }}
                                 </span>
-                                {{-- FIX: relasi masterHealing & judul_aktivitas --}}
                                 {{ $plan->masterHealing->judul_aktivitas ?? 'Aktivitas Healing' }}
                             </div>
                         @empty
@@ -160,7 +157,6 @@
                         ⏰ {{ \Carbon\Carbon::parse($jurnal->created_at)->format('H:i') }} | {{ $jurnal->judul ?? 'Tanpa Judul' }}
                     </span>
                     <div class="text-sm text-gray-500 leading-relaxed">
-                        {{-- FIX: isi -> isi_teks --}}
                         {{ $jurnal->isi_teks ?? $jurnal->isi ?? '-' }}
                     </div>
                 </div>

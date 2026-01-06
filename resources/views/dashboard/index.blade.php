@@ -6,7 +6,6 @@
     <div class="max-w-6xl mx-auto mb-8">
         <div class="bg-transparent rounded-2xl p-6 shadow-xl text-center relative overflow-hidden">
             <div class="relative z-10">
-                {{-- Fitur Quote Dinamis --}}
                 <p class="text-gray-500 italic text-sm mb-1">“{{ $quote }}”</p>
                 <p class="text-[#7FBC4E] font-bold text-xs">~{{ $author }}</p>
             </div>
@@ -16,7 +15,6 @@
 
     <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        {{-- KOLOM KIRI (Baterai & Recent Activity) --}}
         <div class="lg:col-span-5 space-y-6">
             
             <div class="bg-[#7FBC4E] rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
@@ -59,7 +57,6 @@
 
         </div>
 
-        {{-- KOLOM KANAN (Mood Chart & Habit) --}}
         <div class="lg:col-span-7 space-y-6">
             
             <div class="bg-white rounded-3xl p-6 shadow-xl border border-green-50 min-h-[350px] flex flex-col">
@@ -70,7 +67,6 @@
                         <canvas id="dashboardMoodChart"></canvas>
                     </div>
                  @else
-                    {{-- Empty State --}}
                     <div class="w-full h-[350px] flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -102,7 +98,6 @@
 
         </div>
         
-        {{-- BAGIAN BAWAH: REKOMENDASI AKTIVITAS (YANG DIUBAH MENJADI DINAMIS) --}}
         <div class="lg:col-span-12">
             <div class="bg-white rounded-3xl p-4 shadow-xl flex items-center justify-between border border-gray-100">
                 <div class="flex items-center gap-4">
@@ -112,7 +107,6 @@
                         </svg>
                     </div>
                     
-                    {{-- Area Text Berubah-ubah --}}
                     <div>
                         <h4 id="rec-title" class="font-bold text-[#7FBC4E] text-lg leading-none">
                             Memuat...
@@ -205,11 +199,8 @@
     });
 </script>
 
-{{-- SCRIPT BARU UNTUK ROTASI REKOMENDASI --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Ambil data dari Controller (pastikan variabel $pendingPlans dikirim dari controller)
-        // Default ke array kosong jika variabel belum ada
         const plans = @json($pendingPlans ?? []); 
 
         const elTitle = document.getElementById('rec-title');
@@ -219,7 +210,6 @@
         let currentIndex = 0;
 
         function updateRecommendation() {
-            // Jika tidak ada data / semua sudah selesai
             if (!plans || plans.length === 0) {
                 elTitle.textContent = "Semua Tuntas!";
                 elCat.textContent = "Great Job";
@@ -227,24 +217,17 @@
                 return;
             }
 
-            // Ambil data current index
             const currentPlan = plans[currentIndex];
 
-            // Update Teks (Efek ganti)
-            // Gunakan animasi fade-in sederhana lewat style opsional jika mau, 
-            // tapi disini kita update textContent saja biar cepat.
             elTitle.textContent = currentPlan.judul;
             elCat.textContent = currentPlan.kategori;
             elDesc.textContent = currentPlan.deskripsi;
 
-            // Pindah ke index selanjutnya (looping)
             currentIndex = (currentIndex + 1) % plans.length;
         }
 
-        // Jalankan sekali saat load
         updateRecommendation();
 
-        // Putar otomatis setiap 4 detik (4000ms) jika data lebih dari 1
         if (plans && plans.length > 1) {
             setInterval(updateRecommendation, 4000); 
         }

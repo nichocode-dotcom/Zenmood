@@ -41,11 +41,8 @@
             @endphp
             <div class="bg-white border-2 border-[#558B2F] rounded-[24px] shadow-[2px_3px_10px_-3px_rgba(0,0,0,0.25)] p-4 md:p-6 flex items-center gap-4">
                 <div class="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#DAEDCD] flex items-center justify-center">
-    
-                    {{-- LOGIKA BARU: Cek kolom 'icon' dari database --}}
                     
                     @if($habit->icon == 'water' || $habit->nama == 'Minum Air 2L') 
-                        {{-- Icon Air --}}
                         <svg class="w-6 h-6 md:w-8 md:h-8 text-[#558B2F]" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0L12 2.69z"/>
                         </svg>
@@ -76,13 +73,11 @@
                         </svg>
 
                     @elseif($habit->nama == 'Baca Buku')
-                        {{-- Icon Buku --}}
                         <svg class="w-6 h-6 md:w-8 md:h-8 text-[#558B2F]" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1zm0 13.5c-1.1-.35-2.3-.5-3.5-.5-1.7 0-4.15.65-5.5 1.5V8c1.35-.85 3.8-1.5 5.5-1.5 1.2 0 2.4.15 3.5.5v11.5z"/>
                         </svg>
 
                     @else
-                        {{-- Default Icon (Plus/Kotak) --}}
                         <svg class="w-6 h-6 md:w-8 md:h-8 text-[#558B2F]" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                         </svg>

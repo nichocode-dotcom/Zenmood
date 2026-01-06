@@ -27,25 +27,18 @@ class Mood extends Model
         'skor',
     ];
 
-    // 3. Relasi ke tabel Users
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
 
-    // 4. Relasi ke tabel Emosi
     public function emosi()
     {
         return $this->belongsTo(Emosi::class, 'id_emosi', 'id_emosi');
     }
     
-    // 5. Relasi ke tabel Aktivitas (Ternyata mengarah ke tabel Healing Plan)
     public function aktivitas()
     {
-        // Parameter 2: Foreign Key di tabel MOOD (id_aktivitas)
-        // Parameter 3: Primary Key di tabel TUJUAN/MASTER (id_healing)
-        
-        // PENTING: Gunakan 'id_healing' karena tabel targetnya adalah master_healing_plan
         return $this->belongsTo(MasterAktivitas::class, 'id_aktivitas', 'id_healing');
     }
 }

@@ -258,12 +258,10 @@
         const modal = document.getElementById('journalModal');
         const container = document.getElementById('modalContainer');
         
-        // Isi Data
         document.getElementById('modalDate').innerText = date;
         document.getElementById('modalTitle').innerText = title || 'Jurnal Harian';
         document.getElementById('modalBody').innerText = body;
 
-        // Tampilkan Modal dengan Animasi
         modal.classList.remove('hidden');
         setTimeout(() => {
             container.classList.remove('scale-95', 'opacity-0');
@@ -275,7 +273,6 @@
         const modal = document.getElementById('journalModal');
         const container = document.getElementById('modalContainer');
 
-        // Sembunyikan dengan Animasi
         container.classList.remove('scale-100', 'opacity-100');
         container.classList.add('scale-95', 'opacity-0');
         
@@ -284,7 +281,6 @@
         }, 300);
     }
 
-    // Menutup modal jika klik di area hitam (luar modal)
     window.onclick = function(event) {
         const modal = document.getElementById('journalModal');
         if (event.target == modal) {
@@ -304,8 +300,8 @@
                         data: @json($chartValues), 
                         backgroundColor: @json($chartColors), 
                         borderRadius: 10,
-                        barThickness: 40, // Paksa tebal batang agar terlihat
-                        minBarLength: 5,  // Batang tetap muncul sedikit meski skor rendah
+                        barThickness: 40, 
+                        minBarLength: 5,  
                         borderSkipped: false,
                     }]
                 },
@@ -315,34 +311,33 @@
                     plugins: {
                         legend: { display: false },
                         tooltip: {
-                            enabled: true // Gunakan tooltip default agar lebih stabil
+                            enabled: true 
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
                             min: 0,
-                            max: 10, // Memastikan skor 1-10 terlihat tinggi memenuhi canvas
+                            max: 10, 
                             grid: {
                                 display: true,
                                 color: '#F3F4F6',
                                 borderDash: [5, 5]
                             },
                             ticks: {
-                                stepSize: 1, // Memunculkan garis bantu setiap kenaikan 1 skor
-                                display: false // Tetap sembunyikan angka di samping agar bersih
+                                stepSize: 1, 
+                                display: false 
                             }
                         },
                         x: {
                             grid: { display: false },
-                            ticks: { padding: 10 } // Memberi jarak antara batang dan jam agar tidak terlalu mepet
+                            ticks: { padding: 10 } 
                         }
                     }
                 }
             });
         }
 
-        // --- 2. SCRIPT TOGGLE ANALISIS (TETAP SAMA) ---
         const btnMain = document.getElementById('toggle-analysis-main');
         const panelMain = document.getElementById('analysis-main');
         const labelMain = document.getElementById('toggle-analysis-main-label');

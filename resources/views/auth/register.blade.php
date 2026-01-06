@@ -26,7 +26,6 @@
             <form action="{{ route('register.store') }}" method="POST" class="space-y-6">
                 @csrf
                 
-                <!-- Name Input -->
                 <div>
                     <input 
                         type="text" 
@@ -41,7 +40,6 @@
                     @enderror
                 </div>
 
-                <!-- Email Input -->
                 <div>
                     <input 
                         type="email" 
@@ -56,7 +54,6 @@
                     @enderror
                 </div>
 
-                <!-- Password Input -->
                 <div class="relative">
                     <input 
                         type="password" 
@@ -82,7 +79,6 @@
                     @enderror
                 </div>
 
-                <!-- Confirm Password Input -->
                 <div class="relative">
                     <input 
                         type="password" 
@@ -105,7 +101,6 @@
                     </button>
                 </div>
 
-                <!-- Register Button -->
                 <button 
                     type="submit"
                     class="w-full bg-[#558B2F] hover:bg-[#4A6B2F] text-white font-bold py-3 px-6 rounded-full transition-colors duration-200">
@@ -113,7 +108,6 @@
                 </button>
             </form>
 
-            <!-- Back Link -->
             <div class="mt-6 text-center">
                 <a href="{{ route('login') }}" class="text-gray-600 hover:text-[#558B2F] text-sm">Kembali</a>
             </div>

@@ -14,38 +14,29 @@ class HealingPlanController extends Controller
     public function index()
     {
         $userId = auth()->id();
-        
-        // 1. SINKRONISASI TANGGAL (PENTING!)
-        // Ambil tanggal dari session Track Record, default ke hari ini
         $todayStr = session('selected_date', Carbon::now('Asia/Jakarta')->format('Y-m-d'));
         $today = Carbon::parse($todayStr);
 
-        // 2. CEK MOOD PADA TANGGAL YANG DIPILIH
         $userMood = Mood::where('id_user', $userId)
-            ->whereDate('tanggal', $todayStr) // Gunakan $todayStr yang sinkron
+            ->whereDate('tanggal', $todayStr) 
             ->latest()
             ->first();
 
         $hasMood = $userMood ? true : false;
 
-        // 3. AUTO-GENERATE (Jika mood ada tapi belum ada rekomendasi di tanggal tsb)
         if ($hasMood) {
             $this->generateDailyRecommendations($userId, $todayStr, $userMood);
         }
 
-        // 4. AMBIL DATA TRANSAKSI
         $allPlans = MasterHealingPlan::all();
         $transactions = TransHealingPlan::where('id_user', $userId)
             ->whereDate('tanggal', $todayStr) // Gunakan $todayStr
             ->get()
             ->keyBy('id_healing');
-
-        // ... (Kode MAPPING DATA $processedPlans sama persis seperti sebelumnya) ...
-        // ... (Pastikan bagian getStepsByActivity tidak null) ...
         
         $processedPlans = $allPlans->map(function ($plan) use ($transactions) {
             $trans = $transactions->get($plan->id_healing);
-            $steps = $this->getStepsByActivity($plan->judul_aktivitas) ?? []; // Safety null
+            $steps = $this->getStepsByActivity($plan->judul_aktivitas) ?? []; 
             
             return [
                 'id_healing' => $plan->id_healing,
@@ -62,53 +53,43 @@ class HealingPlanController extends Controller
             ];
         });
 
-        // 4. HITUNG ENERGI
         $currentEnergy = 0;
         foreach($processedPlans as $p) {
             if($p['is_completed']) $currentEnergy += $p['poin'];
         }
         $energyPercentage = min($currentEnergy, 100);
 
-        // 5. DATA AKTIF (List kegiatan yang sudah ada di DB hari ini)
         $activeActivities = $processedPlans->where('is_active', true)->values();
         $activeIds = $activeActivities->pluck('id_healing')->toArray();
         
-        // 6. LOGIKA REKOMENDASI
         $mainRecommendations = collect([]);
         $alternativeActivities = collect([]);
 
         if ($hasMood) {
             $idEmosi = $userMood->id_emosi;
             
-            // Ambil pool kandidat (yang belum ada di DB)
             $pool = $processedPlans->where('is_active', false);
 
-            // Filter Pool berdasarkan Emosi User
             $filteredPool = $pool->filter(function ($item) use ($idEmosi) {
-                if (in_array($idEmosi, [4, 6])) { // Cemas (4) / Marah (6) -> Butuh Ketenangan
+                if (in_array($idEmosi, [4, 6])) { 
                     return stripos($item['category'], 'Relaksasi') !== false || stripos($item['title'], 'Napas') !== false || stripos($item['category'], 'Mental') !== false;
                 } 
-                elseif ($idEmosi == 5) { // Sedih (5) -> Butuh Refleksi / Mood Booster
+                elseif ($idEmosi == 5) { 
                     return stripos($item['category'], 'Refleksi') !== false || stripos($item['title'], 'Jurnal') !== false || stripos($item['title'], 'Musik') !== false;
                 }
-                elseif (in_array($idEmosi, [1, 2])) { // Bahagia (1) / Senang (2) -> Salurkan Energi
+                elseif (in_array($idEmosi, [1, 2])) { 
                     return stripos($item['category'], 'Fisik') !== false || stripos($item['category'], 'Produktivitas') !== false || stripos($item['category'], 'Edukasi') !== false;
                 }
-                else { // Biasa Aja (3) -> Random
+                else { 
                     return true;
                 }
             });
 
-            // --- PILIH REKOMENDASI UTAMA ---
-            // Cek apakah hari ini user SUDAH punya rekomendasi utama yang tersimpan?
-            // Kita prioritaskan data yang sudah ada di DB (active & is_utama=true) agar konsisten.
             $existingMain = $activeActivities->where('is_utama', true);
 
             if ($existingMain->count() >= 3) {
-                // Jika sudah ada 3, tampilkan itu saja
                 $mainRecommendations = $existingMain->take(3);
             } else {
-                // Jika kurang, ambil sisanya dari pool baru
                 $needed = 3 - $existingMain->count();
                 
                 if ($filteredPool->count() >= $needed) {
@@ -117,12 +98,8 @@ class HealingPlanController extends Controller
                     $newRecs = $pool->shuffle()->take($needed);
                 }
 
-                // Gabungkan yang lama dengan yang baru
                 $mainRecommendations = $existingMain->merge($newRecs);
 
-                // --- AUTO SAVE LOGIC (PENTING) ---
-                // Simpan rekomendasi BARU ini ke database saat halaman dimuat.
-                // Tujuannya agar rekomendasi ini "terkunci" untuk hari ini.
                 foreach ($newRecs as $rec) {
                     TransHealingPlan::firstOrCreate(
                         [
@@ -132,7 +109,7 @@ class HealingPlanController extends Controller
                         ],
                         [
                             'is_completed' => false,
-                            'is_utama' => true // Kita tandai ini sebagai rekomendasi sistem
+                            'is_utama' => true 
                         ]
                     );
                 }
@@ -140,12 +117,9 @@ class HealingPlanController extends Controller
 
             $mainIds = $mainRecommendations->pluck('id_healing')->toArray();
 
-            // --- LOGIKA ALTERNATIF (WAJIB 5 KOTAK) ---
-            // Ambil sisa kegiatan yang BUKAN Aktif dan BUKAN Rekomendasi Utama
             $remaining = $processedPlans->whereNotIn('id_healing', array_merge($activeIds, $mainIds))->shuffle();
             $alternativeActivities = $remaining->take(5);
 
-            // Failsafe: Jika stok kurang dari 5, ambil filler dari mana saja (asal bukan yg sedang tampil di Main Recs sebagai is_active)
             if ($alternativeActivities->count() < 5) {
                 $needed = 5 - $alternativeActivities->count();
                 $currentAlternativeIds = $alternativeActivities->pluck('id_healing')->toArray();
@@ -159,7 +133,6 @@ class HealingPlanController extends Controller
             $alternativeActivities = $alternativeActivities->values();
         }
 
-        // 7. SIAPKAN DATA UNTUK JAVASCRIPT
         $activitiesDB = [];
         foreach ($processedPlans as $act) {
             $act['icon_url'] = asset('img/' . $act['icon']);
@@ -176,44 +149,37 @@ class HealingPlanController extends Controller
 
     private function generateDailyRecommendations($userId, $date, $moodData)
     {
-        // Cek apakah sudah ada rekomendasi UTAMA di tanggal tersebut
         $existingCount = TransHealingPlan::where('id_user', $userId)
             ->whereDate('tanggal', $date)
             ->where('is_utama', 1)
             ->count();
 
-        // Jika sudah ada 3, jangan generate ulang (biar stabil)
         if ($existingCount >= 3) return;
 
-        // Ambil data mood (ID Emosi)
         $idEmosi = $moodData->id_emosi;
 
-        // Ambil semua aktivitas Master
         $candidates = MasterHealingPlan::all();
 
-        // Filter aktivitas yang cocok dengan emosi
+
         $filtered = $candidates->filter(function ($item) use ($idEmosi) {
             $cat = $item->kategori;
             $title = $item->judul_aktivitas;
 
-            if (in_array($idEmosi, [4, 6])) { // Cemas/Marah -> Tenang
+            if (in_array($idEmosi, [4, 6])) { 
                 return stripos($cat, 'Relaksasi') !== false || stripos($title, 'Napas') !== false;
-            } elseif ($idEmosi == 5) { // Sedih -> Refleksi
+            } elseif ($idEmosi == 5) { // 
                 return stripos($cat, 'Refleksi') !== false || stripos($title, 'Jurnal') !== false;
-            } elseif (in_array($idEmosi, [1, 2])) { // Senang -> Produktif/Fisik
+            } elseif (in_array($idEmosi, [1, 2])) { 
                 return stripos($cat, 'Fisik') !== false || stripos($cat, 'Produktivitas') !== false;
             } else {
-                return true; // Random
+                return true; 
             }
         });
 
-        // Jika filter terlalu sedikit, ambil dari semua kandidat
         if ($filtered->count() < 3) $filtered = $candidates;
 
-        // Ambil 3 acak
         $picks = $filtered->shuffle()->take(3 - $existingCount);
 
-        // Simpan ke DB
         foreach ($picks as $pick) {
             TransHealingPlan::firstOrCreate([
                 'id_user' => $userId,
@@ -226,37 +192,23 @@ class HealingPlanController extends Controller
         }
     }
 
-    /**
-     * FUNGSI UNTUK MENYIMPAN/UPDATE STATUS AKTIVITAS
-     * Perbaikan: Menggunakan updateOrCreate untuk Check (1) maupun Uncheck (0)
-     */
     public function toggleActivity(Request $request)
     {
         $userId = auth()->id();
         $today = session('selected_date', Carbon::now('Asia/Jakarta')->format('Y-m-d'));
         
-        // 1. Cek apakah data ini sudah ada sebelumnya di DB?
         $existing = TransHealingPlan::where('id_user', $userId)
             ->where('id_healing', $request->id_healing)
             ->where('tanggal', $today)
             ->first();
 
-        // 2. Tentukan status 'is_utama'
-        // Jika data sudah ada di DB, KITA WAJIB PAKAI NILAI YANG ADA DI DB.
-        // Jangan percaya input frontend 100% untuk field ini, karena bisa saja frontend reset jadi 0.
-        // Ini menjaga agar rekomendasi utama tidak berubah jadi aktivitas biasa saat diklik.
         $isUtama = $request->is_utama ? 1 : 0;
         if ($existing) {
             $isUtama = $existing->is_utama; 
         }
 
-        // 3. Tentukan status 'is_completed'
-        // 1 = Selesai, 0 = Belum (Progress berjalan)
         $isCompleted = ($request->status == 1) ? 1 : 0;
 
-        // 4. EKSEKUSI PENYIMPANAN
-        // Kita gunakan updateOrCreate. Ini akan meng-handle INSERT jika belum ada, atau UPDATE jika sudah ada.
-        // Kuncinya: Kita TIDAK PERNAH DELETE. Uncheck = Update jadi 0.
         TransHealingPlan::updateOrCreate(
             [
                 'id_user' => $userId, 
@@ -269,7 +221,6 @@ class HealingPlanController extends Controller
             ]
         );
 
-        // 5. Hitung Ulang Total Energi
         $newTotal = TransHealingPlan::where('id_user', $userId)
             ->where('tanggal', $today)
             ->where('is_completed', 1) // Hanya hitung yang 100% selesai
@@ -282,7 +233,6 @@ class HealingPlanController extends Controller
         ]);
     }
 
-    // --- HELPER FUNCTIONS ---
     private function getIconByName($title, $category) {
         if (stripos($title, 'Tidur') !== false) return 'solar_sleeping-bold.svg';
         if (stripos($title, 'Jalan') !== false || stripos($title, 'Lari') !== false || stripos($title, 'Tanaman') !== false || stripos($title, 'Hewan') !== false) return 'fa7-solid_walking.svg';
