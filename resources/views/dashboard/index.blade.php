@@ -2,11 +2,13 @@
 
 @section('content')
 
-<div class="min-h-screen bg-transparent p-6"> <div class="max-w-6xl mx-auto mb-8">
+<div class="min-h-screen bg-transparent p-6"> 
+    <div class="max-w-6xl mx-auto mb-8">
         <div class="bg-transparent rounded-2xl p-6 shadow-xl text-center relative overflow-hidden">
             <div class="relative z-10">
+                {{-- Fitur Quote Dinamis --}}
                 <p class="text-gray-500 italic text-sm mb-1">“{{ $quote }}”</p>
-                <p class="text-[#7FBC4E] font-bold text-xs">ZenMood</p>
+                <p class="text-[#7FBC4E] font-bold text-xs">~{{ $author }}</p>
             </div>
             <div class="absolute top-0 left-0 w-full h-1 bg-[#7FBC4E]"></div>
         </div>
@@ -14,6 +16,7 @@
 
     <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
 
+        {{-- KOLOM KIRI (Baterai & Recent Activity) --}}
         <div class="lg:col-span-5 space-y-6">
             
             <div class="bg-[#7FBC4E] rounded-3xl p-6 text-white shadow-xl relative overflow-hidden">
@@ -45,8 +48,6 @@
                         </div>
 
                         <span class="font-medium text-sm flex-1 text-center truncate">
-                            {{-- Prioritas 1: Nama Aktivitas dari Relasi --}}
-                            {{-- Prioritas 2: Kategori Aktivitas (Backup) --}}
                             {{ $activity->aktivitas->nama_aktivitas ?? $activity->kategori_aktivitas ?? 'Aktivitas Umum' }}
                         </span>
                     </div>
@@ -58,21 +59,18 @@
 
         </div>
 
+        {{-- KOLOM KANAN (Mood Chart & Habit) --}}
         <div class="lg:col-span-7 space-y-6">
             
             <div class="bg-white rounded-3xl p-6 shadow-xl border border-green-50 min-h-[350px] flex flex-col">
                 <h3 class="text-[#4A6B2F] font-bold mb-4">Mood Tracker Emosional</h3>
 
                 @if(count($chartValues) > 0)
-                    
                     <div class="relative w-full flex-1 min-h-[200px]">
                         <canvas id="dashboardMoodChart"></canvas>
                     </div>
-
                  @else
-
-                    {{-- KONDISI 2: TIDAK ADA DATA (Tampilkan Pesan Kosong / Empty State) --}}
-                    
+                    {{-- Empty State --}}
                     <div class="w-full h-[350px] flex flex-col items-center justify-center text-gray-400 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mb-3 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -85,7 +83,6 @@
                             + Input Mood Sekarang
                         </a>
                     </div>
-
                 @endif
             </div>
 
@@ -105,23 +102,32 @@
 
         </div>
         
+        {{-- BAGIAN BAWAH: REKOMENDASI AKTIVITAS (YANG DIUBAH MENJADI DINAMIS) --}}
         <div class="lg:col-span-12">
             <div class="bg-white rounded-3xl p-4 shadow-xl flex items-center justify-between border border-gray-100">
                 <div class="flex items-center gap-4">
                     <div class="h-12 w-12 rounded-full border-2 border-[#7FBC4E] flex items-center justify-center text-[#7FBC4E]">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
+                    
+                    {{-- Area Text Berubah-ubah --}}
                     <div>
-                        <h4 class="font-bold text-[#7FBC4E] text-lg leading-none">Digital Detox</h4>
-                        <p class="text-xs text-gray-500">Sleep</p>
+                        <h4 id="rec-title" class="font-bold text-[#7FBC4E] text-lg leading-none">
+                            Memuat...
+                        </h4>
+                        <p id="rec-category" class="text-xs text-gray-500 mt-1">
+                            Menyiapkan rekomendasi
+                        </p>
                     </div>
-                    <div class="hidden md:block text-xs text-gray-400 ml-4 border-l pl-4">
-                        Puasa dari media sosial menjelang tidur
+
+                    <div id="rec-desc" class="hidden md:block text-xs text-gray-400 ml-4 border-l pl-4 max-w-md truncate">
+                        Mencari aktivitas terbaik untukmu...
                     </div>
                 </div>
-                <button class="bg-[#7FBC4E] hover:bg-[#6da842] text-white text-xs font-bold py-2 px-6 rounded-full shadow-md transition-colors">
+
+                <button onclick="window.location.href='{{ url('/healing-plan') }}'" class="bg-[#7FBC4E] hover:bg-[#6da842] text-white text-xs font-bold py-2 px-6 rounded-full shadow-md transition-colors whitespace-nowrap">
                     Pilih Rekomendasi
                 </button>
             </div>
@@ -129,6 +135,7 @@
 
     </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -194,6 +201,52 @@
                     }
                 }
             });
+        }
+    });
+</script>
+
+{{-- SCRIPT BARU UNTUK ROTASI REKOMENDASI --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ambil data dari Controller (pastikan variabel $pendingPlans dikirim dari controller)
+        // Default ke array kosong jika variabel belum ada
+        const plans = @json($pendingPlans ?? []); 
+
+        const elTitle = document.getElementById('rec-title');
+        const elCat = document.getElementById('rec-category');
+        const elDesc = document.getElementById('rec-desc');
+
+        let currentIndex = 0;
+
+        function updateRecommendation() {
+            // Jika tidak ada data / semua sudah selesai
+            if (!plans || plans.length === 0) {
+                elTitle.textContent = "Semua Tuntas!";
+                elCat.textContent = "Great Job";
+                elDesc.textContent = "Kamu hebat! Semua target hari ini sudah selesai.";
+                return;
+            }
+
+            // Ambil data current index
+            const currentPlan = plans[currentIndex];
+
+            // Update Teks (Efek ganti)
+            // Gunakan animasi fade-in sederhana lewat style opsional jika mau, 
+            // tapi disini kita update textContent saja biar cepat.
+            elTitle.textContent = currentPlan.judul;
+            elCat.textContent = currentPlan.kategori;
+            elDesc.textContent = currentPlan.deskripsi;
+
+            // Pindah ke index selanjutnya (looping)
+            currentIndex = (currentIndex + 1) % plans.length;
+        }
+
+        // Jalankan sekali saat load
+        updateRecommendation();
+
+        // Putar otomatis setiap 4 detik (4000ms) jika data lebih dari 1
+        if (plans && plans.length > 1) {
+            setInterval(updateRecommendation, 4000); 
         }
     });
 </script>
