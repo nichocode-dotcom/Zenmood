@@ -269,9 +269,7 @@ class TrackRecordController extends Controller
         
         // Generate URL Grafik
         $chartUrl = 'https://quickchart.io/chart?c=' . urlencode(json_encode($chartConfig));
-        // ------------------------------------------
 
-        // 7. Analisis Teks (Logic Default)
         $avgMoodScore = $todaysMoods->avg('skor');
         $moodCount = $todaysMoods->count();
         $moodAnalysisText = "Data tidak cukup untuk analisis.";
@@ -294,7 +292,6 @@ class TrackRecordController extends Controller
             }
         }
 
-        // 8. Generate PDF
         $pdf = PDF::loadView('track_record.pdf', compact(
             'user', 'selectedDate', 'insightMessage', 'journals', 
             'allHabits', 'habitPercentage', 'allHealing', 'healingPercentage', 
