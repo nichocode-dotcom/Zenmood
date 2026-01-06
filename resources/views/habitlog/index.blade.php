@@ -291,18 +291,25 @@ function submitHabit(event) {
         },
         body: JSON.stringify(formData)
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.message || 'Terjadi kesalahan pada server');
+            });
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             closeModal();
             location.reload();
         } else {
-            alert('Gagal menambahkan habit. Silakan coba lagi.');
+            alert(data.message || 'Gagal menambahkan habit. Silakan coba lagi.');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Terjadi kesalahan. Silakan coba lagi.');
+        alert(error.message || 'Terjadi kesalahan. Silakan coba lagi.');
     });
 }
 
